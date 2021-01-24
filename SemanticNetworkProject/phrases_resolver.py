@@ -1,7 +1,7 @@
 def set_dep_type(dep_type):
-    global __dep_type, __is_enchanced
+    global __dep_type, __is_enhanced
     __dep_type = dep_type
-    __is_enchanced = "enhanced" in __dep_type.lower()
+    __is_enhanced = "enhanced" in __dep_type.lower()
 
 def get_dep_type():
     global __dep_type
@@ -16,15 +16,16 @@ def check_negation(sentence, dep, targetID):
         target_token = sentence.token[targetID]
         target_lemma = target_token.lemma
         if(target_lemma == "no" or target_lemma == "not" or target_lemma == "n't"): return True
+    elif(dep == "cc:preconj"):
+        target_token = sentence.token[targetID]
+        target_lemma = target_token.lemma
+        if(target_lemma == "neither"): return True
     return False
 
-def check_edge_negation(sentence, edge):
-    return check_negation(sentence, edge.dep, edge.target - 1)
-
-def check_word_negation(sentence, tokenID):
-    for edge in getattr(sentence, __dep_type).edge:
-        if(edge.source - 1 == tokenID):
-            if(check_edge_negation(sentence, edge)): return True
+def check_word_negation(sentence, tokenID, source_edges_dict):
+    for edge_dep, edge_targets_list in source_edges_dict[tokenID].items():
+        for target_tokenID in edge_targets_list:
+            if(check_negation(sentence, edge_dep, target_tokenID)): return True
     return False
 
 class PhrasesResolver:
@@ -63,7 +64,7 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
         for target_tokenID in edge_targets_list:
             if(check_negation(sentence, edge_dep, target_tokenID)): return []
 
-            if(__is_enchanced):
+            if(__is_enhanced):
                 if(next((True for normalized_dict in normalized_phrases #cycle checking
                          if target_tokenID in normalized_dict), False)):
                     continue
