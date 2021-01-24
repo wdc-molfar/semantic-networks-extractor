@@ -21,13 +21,19 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="extractor.py">
+    <Compile Include="extractor\core.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="phrases_resolver.py">
+    <Compile Include="extractor\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="extractor\phrases_resolver.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SemanticNetworkProject.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="extractor\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

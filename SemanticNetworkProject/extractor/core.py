@@ -1,4 +1,4 @@
-import phrases_resolver
+from . import phrases_resolver
 
 class SentenceParser:
     """Extracts information from sentence."""
