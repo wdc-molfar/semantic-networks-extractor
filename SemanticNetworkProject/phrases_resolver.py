@@ -8,6 +8,7 @@ def get_dep_type():
     return __dep_type
 
 set_dep_type("enhancedPlusPlusDependencies")
+#set_dep_type("basicDependencies")
 
 def check_negation(sentence, dep, targetID):
     if(dep == "neg"): return True
@@ -62,17 +63,18 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
         for target_tokenID in edge_targets_list:
             if(check_negation(sentence, edge_dep, target_tokenID)): return []
 
-            edge_target = target_tokenID + 1
-
-            if(__is_enchanced and
-                next((True for normalized_dict in normalized_phrases
-                        if target_tokenID in normalized_dict), False)):
-                continue
-
-            if(__is_enchanced and (edge_dep == "amod" or edge_dep == "advmod" or edge_dep == "compound")):
-                target_dep_dict = resolver.target_edges_dict[target_tokenID]
-                if(next((True for target_dep in target_dep_dict if target_dep.startswith('conj')), False)):
+            if(__is_enchanced):
+                if(next((True for normalized_dict in normalized_phrases #cycle checking
+                         if target_tokenID in normalized_dict), False)):
                     continue
+
+                if(not edge_dep.startswith("conj")):
+                    target_dep_dict = resolver.target_edges_dict[target_tokenID]
+                    if(next((True for target_dep in target_dep_dict #multiple roots checking
+                             if target_dep.startswith('conj')), False)):
+                        continue
+
+            if(edge_dep == "amod" or edge_dep == "advmod" or edge_dep == "compound"):
                 new_dicts = __get_normalized_phrases_dicts(sentence, target_tokenID, resolver, False)
                 normalized_phrases = [{**current_dict, **new_dict}
                                         for current_dict in normalized_phrases

@@ -8,7 +8,8 @@ class SentenceParser:
     def extract(self, sentence):
         self.resolver.fill_dicts(sentence)
         for edge in getattr(sentence, phrases_resolver.get_dep_type()).edge:
-            print(f"{'; '.join(self.resolver.get_resolved_phrases(sentence, edge.source-1))} -{edge.dep}-> {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.target-1))}")
+            print(f"1: {sentence.token[edge.source-1].word} -{edge.dep}-> {sentence.token[edge.target-1].word}")
+            print(f"2: {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.source-1))} -{edge.dep}-> {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.target-1))}")
             #ner (!="O") -> is_a ner.lower()
             #проверка связи - игнорирование лишних (поиск по ключу в словаре списков функций/классов обработки)
             #проверка отрицания у источника (neg, det -> no)
