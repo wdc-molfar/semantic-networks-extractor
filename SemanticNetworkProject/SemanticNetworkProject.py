@@ -22,7 +22,7 @@ if not os.path.isfile(f"./models/stanford-corenlp-{version}-models-{language}.ja
 
 input_text = "A semantic network is a graph structure for representing knowledge in patterns of interconnected nodes and arcs. It consists of nodes, links and link labels."
 input_text = "A boy and a girl are playing with figures. Their small and big red and white cubes and yellow parallelepipeds are on the table. These figures are parts of a pyramid."
-input_text = "The cubes are red and not big. There are cubes and no spheres on the table. They are parts of a wall."
+#input_text = "The cubes are red and not big. There are cubes and no spheres on the table. They are parts of a wall."
 #input_text = "United States of America is a country. It is very large. Barack Obama was a president of it. His daughters are Sasha and Malia. They were one of the most influential teenagers of 2014."
 
 def get_mention(document, chainID):

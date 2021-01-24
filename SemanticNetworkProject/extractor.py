@@ -32,7 +32,7 @@ class InformationExtractor:
                  document.sentence[mention.sentenceIndex].token[mention.headIndex].pos != "PRP"),
                 key=lambda mention: mention.sentenceIndex)
             sentence = document.sentence[mention.sentenceIndex]
-            self.resolved_coreferences[chain.chainID] = phrases_resolver.resolve_phrases(sentence, mention.headIndex, self.resolved_coreferences)
+            self.resolved_coreferences[chain.chainID] = phrases_resolver.resolve_phrases_from_coref_dict(sentence, mention.headIndex, self.resolved_coreferences)
 
     def extract(self, document):
         self.resolved_coreferences.clear()
