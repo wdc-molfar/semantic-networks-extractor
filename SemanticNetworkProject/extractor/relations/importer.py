@@ -7,7 +7,7 @@ from . import base
 
 class RelationsExtractors(base.AbstractRelationExtractor):
     """Extracts presetted relations from dependencies."""
-    _extractors: Iterable[base.RelationExtractor]
+    _extractors: Iterable[base.RelationExtractor] #TODO: use dep dict
 
     @classmethod
     def _get_extractors_from_module_name(cls, module_name: str):
