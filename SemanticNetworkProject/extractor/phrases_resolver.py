@@ -1,25 +1,22 @@
-def set_dep_type(dep_type):
-    global __dep_type, __is_enhanced
-    __dep_type = dep_type
-    __is_enhanced = "enhanced" in __dep_type.lower()
+#from typing import List, Dict
+from . import settings
 
-def get_dep_type():
-    global __dep_type
-    return __dep_type
-
-set_dep_type("enhancedPlusPlusDependencies")
-#set_dep_type("basicDependencies")
+#NodeEdgesDict = Dict[int, Dict[str, int]]
 
 def check_negation(sentence, dep, targetID):
     if(dep == "neg"): return True
+
     if(dep == "det" or dep == "advmod"):
         target_token = sentence.token[targetID]
         target_lemma = target_token.lemma
-        if(target_lemma == "no" or target_lemma == "not" or target_lemma == "n't"): return True
+        if(target_lemma == "no" or target_lemma == "not"
+           or target_lemma == "n't" or target_lemma == "never"): return True
+
     elif(dep == "cc:preconj"):
         target_token = sentence.token[targetID]
         target_lemma = target_token.lemma
         if(target_lemma == "neither"): return True
+
     return False
 
 def check_word_negation(sentence, tokenID, source_edges_dict):
@@ -43,7 +40,7 @@ class PhrasesResolver:
 
     def fill_dicts(self, sentence):
         self.clear()
-        for edge in getattr(sentence, get_dep_type()).edge:
+        for edge in getattr(sentence, settings.get_dep_type()).edge:
             self.source_edges_dict.setdefault(edge.source - 1, dict()).setdefault(edge.dep, list()).append(edge.target - 1)
             self.target_edges_dict.setdefault(edge.target - 1, dict()).setdefault(edge.dep, list()).append(edge.source - 1)
     
@@ -64,7 +61,7 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
         for target_tokenID in edge_targets_list:
             if(check_negation(sentence, edge_dep, target_tokenID)): return []
 
-            if(__is_enhanced):
+            if(settings.get_is_enhanced()):
                 if(next((True for normalized_dict in normalized_phrases #cycle checking
                          if target_tokenID in normalized_dict), False)):
                     continue

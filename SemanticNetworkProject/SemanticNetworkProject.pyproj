@@ -24,6 +24,21 @@
     <Compile Include="extractor\core.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="extractor\relations\base.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="extractor\relations\importer.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="extractor\relations\part_of.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="extractor\relations\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="extractor\settings.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="extractor\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -34,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="extractor\" />
+    <Folder Include="extractor\relations\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

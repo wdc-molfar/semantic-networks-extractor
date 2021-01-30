@@ -1,4 +1,6 @@
 from . import phrases_resolver
+from . import settings
+from .relations.importer import RelationsExtractors
 
 class SentenceParser:
     """Extracts information from sentence."""
@@ -6,10 +8,12 @@ class SentenceParser:
         self.resolver = phrases_resolver.PhrasesResolver(coref_dict)
 
     def extract(self, sentence):
+        print("------------------------------------------------------------------------------------------------")
         self.resolver.fill_dicts(sentence)
-        for edge in getattr(sentence, phrases_resolver.get_dep_type()).edge:
+        for edge in getattr(sentence, settings.get_dep_type()).edge:
             print(f"1: {sentence.token[edge.source-1].word} -{edge.dep}-> {sentence.token[edge.target-1].word}")
             print(f"2: {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.source-1))} -{edge.dep}-> {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.target-1))}")
+            print(RelationsExtractors.extract(sentence, edge, self.resolver))
             #ner (!="O") -> is_a ner.lower()
             #проверка связи - игнорирование лишних (поиск по ключу в словаре списков функций/классов обработки)
             #проверка отрицания у источника (neg, det -> no)

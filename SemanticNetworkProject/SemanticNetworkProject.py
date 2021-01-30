@@ -2,6 +2,8 @@ import os.path
 import stanza
 from stanza.server import CoreNLPClient
 from extractor.core import InformationExtractor
+from extractor.settings import set_dep_type
+from extractor.relations.importer import RelationsExtractors
 
 #lang = "en"
 #stanza.download(lang)
@@ -25,6 +27,13 @@ input_text = "A semantic network is a graph structure for representing knowledge
 #input_text = "The cubes are red and not big. There are cubes and no spheres on the table. They are parts of a wall."
 #input_text = "United States of America is a country. It is very large. Barack Obama was a president of it. His daughters are Sasha and Malia. They were one of the most influential teenagers of 2014."
 #input_text = "There are neither green nor yellow cubes on the table."
+input_text = "Middle ear has anvil and stirrup. Middle ear contains anvil and stirrup. Middle ear includes anvil and stirrup. Middle ear is made of anvil and stirrup. Middle ear consists of anvil and stirrup."
+
+set_dep_type("enhancedPlusPlusDependencies")
+#set_dep_type("basicDependencies")
+
+RelationsExtractors.use_all_relations()
+#RelationsExtractors.use_relations(["part_of"])
 
 #java -Xmx5G -cp C:\Users\Alexander\stanza_corenlp\* edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 60000 -threads 5 -maxCharLength 100000 -quiet False -serverProperties english -annotators tokenize,ssplit,pos,lemma,ner,depparse,coref -preload -outputFormat serialized
 with CoreNLPClient(properties=language, start_server=stanza.server.StartServer.DONT_START, annotators="tokenize,ssplit,pos,lemma,ner,depparse,coref") as client:
@@ -33,11 +42,8 @@ with CoreNLPClient(properties=language, start_server=stanza.server.StartServer.D
       ie.extract(document)
       print(ie.resolved_coreferences)
 #TODO: source, dep, target - chains of resp
-#TODO: negation checker (sentence, headID)
-#TODO: conjunction checker (sentence, headID)
 #TODO: create array of triples -> (subject, relation, object)
 #TODO: save to Neo4j
-#dictionary for coreference (full document); dictionaries for dep (current sentence)
 #1) Класс обработки текста (создаёт словарь разрешения кореферентности)
 #2) Класс обработки предложения (обрабатывает зависимости, игнорируя лишние, но собирает их все в словари; подготавливает фразы (мемоизация?))
 #3) Классы или функции цепочек обязанностей для обработки зависимостей и получения массивов триплетов
