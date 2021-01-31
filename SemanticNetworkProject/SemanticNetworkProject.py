@@ -22,12 +22,13 @@ stanza.install_corenlp()
 if not os.path.isfile(f"./models/stanford-corenlp-{version}-models-{language}.jar"):
     stanza.download_corenlp_models(model=language, version=version)
 
-input_text = "A semantic network is a graph structure for representing knowledge. It consists of nodes, links and link labels."
+#input_text = "A semantic network is a graph structure for representing knowledge. It consists of nodes, links and link labels."
 #input_text = "A boy and a girl are playing with figures. Their small and big red and white cubes and yellow parallelepipeds are on the table. These figures are parts of a pyramid."
 #input_text = "The cubes are red and not big. There are cubes and no spheres on the table. They are parts of a wall."
 #input_text = "United States of America is a country. It is very large. Barack Obama was a president of it. His daughters are Sasha and Malia. They were one of the most influential teenagers of 2014."
 #input_text = "There are neither green nor yellow cubes on the table."
-input_text = "Middle ear has anvil and stirrup. Middle ear contains anvil and stirrup. Middle ear includes anvil and stirrup. Middle ear is made of anvil and stirrup. Middle ear consists of anvil and stirrup."
+#input_text = "Middle ear has anvil and stirrup. Middle ear contains anvil and stirrup. Middle ear includes anvil and stirrup. Middle ear is made of anvil and stirrup. Middle ear consists of anvil and stirrup."
+input_text = "Doors of the car. The car’s door is open. The car with a door. A segment is a part of a circle. A circle is a set of points. Points within the figure. Functions used within Geometry. A factor is a multiplication term. The imaginary axis is the vertical line in a complex plane. The altitude with the hypotenuse as base divides the hypotenuse into two lengths. The first part of the ear the sound waves reach is called the tympanic membrane. Middle ear consists of anvil and stirrup."
 
 set_dep_type("enhancedPlusPlusDependencies")
 #set_dep_type("basicDependencies")

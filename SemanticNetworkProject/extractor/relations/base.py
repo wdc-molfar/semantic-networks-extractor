@@ -1,6 +1,7 @@
 from abc import ABC, abstractclassmethod
 from typing import Iterable, Set, NamedTuple
 from ..phrases_resolver import PhrasesResolver
+from ..settings import get_is_enhanced
 
 class Relation(NamedTuple):
     source: str
@@ -16,10 +17,16 @@ class AbstractRelationExtractor(ABC):
 class RelationExtractor(AbstractRelationExtractor):
     """Extracts specific relations from dependencies."""
     _deps: Set[str]
+    _enhanced_deps: Set[str]
 
-    @abstractclassmethod
+    @classmethod
+    def static_init(cls):
+        if(not hasattr(cls, "_enhanced_deps")):
+            cls._enhanced_deps = cls._deps
+    
+    @classmethod
     def _check(cls, sentence, edge, resolver: PhrasesResolver) -> bool:
-        return edge.dep in cls._deps
+        return edge.dep in cls._enhanced_deps if get_is_enhanced() else edge.dep in cls._deps
 
     @abstractclassmethod
     def _extract(cls, sentence, edge, resolver: PhrasesResolver) -> Iterable[Relation]:
@@ -40,9 +47,9 @@ class SourceRelationExtractor(RelationExtractor):
         source_lemma = source_token.lemma
         return source_lemma in cls._lemmas
     
-#class DependencyRelationExtractor(RelationExtractor):
-#    """Extracts specific relations from dependencies by dependency type."""
-#    pass
+class DependencyRelationExtractor(RelationExtractor):
+    """Extracts specific relations from dependencies by dependency type."""
+    pass
 
 #class TargetRelationExtractor(RelationExtractor):
 #    """Extracts specific relations from dependencies by target token."""

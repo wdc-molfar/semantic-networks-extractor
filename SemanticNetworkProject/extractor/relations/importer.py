@@ -16,6 +16,7 @@ class RelationsExtractors(base.AbstractRelationExtractor):
         for attribute_name in dir(module):
             attribute = getattr(module, attribute_name)
             if(isclass(attribute) and issubclass(attribute, base.RelationExtractor) and not isabstract(attribute)):
+                attribute.static_init()
                 extractors.append(attribute)
         return extractors
 
