@@ -88,3 +88,18 @@ class NmodOfDependencyRelationExtractor(base.DependencyRelationExtractor):
             for rel_target in rel_targets:
                 rels.add(base.Relation(rel_source, _rel, rel_target))
         return rels
+
+    
+class NmodPossDependencyRelationExtractor(base.DependencyRelationExtractor):
+    """Extracts part_of relations from dependencies by nmod:poss relation."""
+    _deps = {"nmod:poss"}
+    
+    @classmethod
+    def _extract(cls, sentence, edge, resolver):
+        rels = set()   
+        rel_sources = resolver.get_resolved_phrases(sentence, edge.source-1)
+        rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
+        for rel_source in rel_sources:
+            for rel_target in rel_targets:
+                rels.add(base.Relation(rel_source, _rel, rel_target))
+        return rels
