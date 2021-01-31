@@ -19,6 +19,7 @@ class RootPartOfSourceRelationExtractor(base.SourceRelationExtractor):
     
     @classmethod
     def _extract(cls, sentence, edge, resolver):
+        if(phrases_resolver.check_word_negation(sentence, edge.source-1, resolver.source_edges_dict)): return []
         dep_dict = resolver.source_edges_dict[edge.source-1]
         if("obj" not in dep_dict): return []
         obj_list = dep_dict["obj"]
@@ -38,6 +39,7 @@ class RootWithOfPartOfSourceRelationExtractor(base.SourceRelationExtractor):
     
     @classmethod
     def _extract(cls, sentence, edge, resolver):
+        if(phrases_resolver.check_word_negation(sentence, edge.source-1, resolver.source_edges_dict)): return []
         dep_dict = resolver.source_edges_dict[edge.source-1]
         if(get_is_enhanced()):
             if("obl:of" not in dep_dict): return []
