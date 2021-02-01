@@ -49,6 +49,38 @@ class UsedWithinPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRela
     _case = "within"
     _invert_source_and_target = True
 
+class DivideIntoPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRelationExtractor):
+    """Extracts part_of relations from dependencies by divide into root."""
+    _rel = _rel
+    _deps = {"obj"}
+    _lemmas = {"divide", "partition", "cut", "break", "chop"}
+    _second_dep = "obl"
+    _case = "into"
+
+class DivideToPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRelationExtractor):#Is it used?
+    """Extracts part_of relations from dependencies by divide to root."""
+    _rel = _rel
+    _deps = {"obj"}
+    _lemmas = {"divide", "partition", "cut", "break", "chop"}
+    _second_dep = "obl"
+    _case = "to"
+
+class DividedIntoPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRelationExtractor):
+    """Extracts part_of relations from dependencies by divided into root."""
+    _rel = _rel
+    _deps = {"nsubj:pass"}
+    _lemmas = {"divide", "partition", "cut", "break", "chop"}
+    _second_dep = "obl"
+    _case = "into"
+
+class DividedToPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRelationExtractor):
+    """Extracts part_of relations from dependencies by divided to root."""
+    _rel = _rel
+    _deps = {"nsubj:pass"}
+    _lemmas = {"divide", "partition", "cut", "break", "chop"}
+    _second_dep = "obl"
+    _case = "to"
+
 class NmodOfPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
     """Extracts part_of relations from dependencies by nmod:of relation."""
     _rel = _rel
