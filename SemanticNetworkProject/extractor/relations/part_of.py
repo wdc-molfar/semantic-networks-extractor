@@ -85,13 +85,17 @@ class NmodOfPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelation
     """Extracts part_of relations from dependencies by nmod:of relation."""
     _rel = _rel
     _enhanced_deps = {"nmod:of"}
-    _blacklist_source_lemmas = {"family", "arrangement", "group", "operation", "property", "set", "union",
+    _inverse_source_lemmas = {"family", "arrangement", "group", "operation", "property", "set", "union",
                                 "intersection", "use", "combination", "aggregation", "sum", "function"}
     
     @classmethod
     def _extract(cls, sentence, edge, resolver):
-        if(sentence.token[edge.source-1].lemma in cls._blacklist_source_lemmas): return []
-        return super()._extract(sentence, edge, resolver)
+        rels = super()._extract(sentence, edge, resolver)
+        if(sentence.token[edge.source-1].lemma in cls._inverse_source_lemmas):
+            inversed_rels = set()
+            for rel in rels: inversed_rels.add(base.Relation(rel.target, rel.rel, rel.source))
+            return inversed_rels
+        else: return rels        
 
 class NmodPossPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
     """Extracts part_of relations from dependencies by nmod:poss relation."""
