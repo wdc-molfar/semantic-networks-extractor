@@ -42,11 +42,4 @@ with CoreNLPClient(properties=language, start_server=stanza.server.StartServer.D
       ie = InformationExtractor()
       ie.extract(document)
       print(ie.resolved_coreferences)
-#TODO: source, dep, target - chains of resp
-#TODO: create array of triples -> (subject, relation, object)
 #TODO: save to Neo4j
-#1) Класс обработки текста (создаёт словарь разрешения кореферентности)
-#2) Класс обработки предложения (обрабатывает зависимости, игнорируя лишние, но собирает их все в словари; подготавливает фразы (мемоизация?))
-#3) Классы или функции цепочек обязанностей для обработки зависимостей и получения массивов триплетов
-#4) Классы или функции для обработки отрицаний и конъюнкции
-#5) Класс или функция для сохранения триплетов в Neo4j

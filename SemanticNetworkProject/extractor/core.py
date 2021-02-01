@@ -15,13 +15,6 @@ class SentenceParser:
             print(f"2: {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.source-1))} -{edge.dep}-> {'; '.join(self.resolver.get_resolved_phrases(sentence, edge.target-1))}")
             print(RelationsExtractors.extract(sentence, edge, self.resolver))
             #ner (!="O") -> is_a ner.lower()
-            #проверка связи - игнорирование лишних (поиск по ключу в словаре списков функций/классов обработки)
-            #проверка отрицания у источника (neg, det -> no)
-            #проверка источника по цепочке
-            #проверка конъюнкции
-            #проверка отрицания у цели (neg, advmod -> not; cc:preconj -> neither; cc -> nor)
-            #проверка цели по цепочке
-            #проверка конъюнкции у источника и цели (conj, conj:and)
             #проверка на соответствие отдельных источников и целей (advmod -> respectively)
             pass
         #TODO
