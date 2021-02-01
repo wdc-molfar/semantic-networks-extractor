@@ -1,6 +1,6 @@
 from abc import ABC, abstractclassmethod
 from typing import Iterable, Set, NamedTuple
-from ..phrases_resolver import PhrasesResolver
+from ..phrases_resolver import PhrasesResolver, check_word_negation
 from ..settings import get_is_enhanced
 
 class Relation(NamedTuple):
@@ -63,8 +63,50 @@ def check_dep_lemma(sentence, dep_dict, dep, lemma) -> bool:
         if(token.lemma == lemma): return True
     return False
 
+class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
+    """Extracts relations from dependencies by source token with case."""
+    _rel: str
+    _second_dep: str
+    _enhanced_second_dep: str
+    _case: str
+    _invert_source_and_target = False
+    
+    @classmethod
+    def static_init(cls):
+        super().static_init()
+        cls._enhanced_second_dep = f"{cls._second_dep}:{cls._case}"
+    
+    @classmethod
+    def _extract(cls, sentence, edge, resolver):
+        if(check_word_negation(sentence, edge.source-1, resolver.source_edges_dict)): return []
+        dep_dict = resolver.source_edges_dict[edge.source-1]
+        if(get_is_enhanced()):
+            if(cls._enhanced_second_dep not in dep_dict): return []
+            obj_list = dep_dict[cls._enhanced_second_dep]
+        else:
+            if(cls._second_dep not in dep_dict): return []
+            obj_list = dep_dict[cls._second_dep]
+            has_of = False
+            for obj_tokenID in obj_list:
+                if(obj_tokenID not in resolver.source_edges_dict): continue
+                obj_dep_dict = resolver.source_edges_dict[obj_tokenID]
+                if(check_dep_lemma(sentence, obj_dep_dict, "case", cls._case)): break
+            else: return []
+            
+        rels = set()
+        rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
+        for rel_sourceID in obj_list:
+            rel_sources = resolver.get_resolved_phrases(sentence, rel_sourceID)
+            for rel_target in rel_targets:
+                for rel_source in rel_sources:
+                    if(cls._invert_source_and_target):
+                        rels.add(Relation(rel_target, cls._rel, rel_source))
+                    else:
+                        rels.add(Relation(rel_source, cls._rel, rel_target))
+        return rels
+
 class SpecialNmodDependencyRelationExtractor(DependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod relations."""
+    """Extracts relations from dependencies by nmod relations."""
     _rel: str
     _deps = {"nmod"}
     _invert_source_and_target = False
