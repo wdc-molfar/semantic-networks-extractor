@@ -26,7 +26,8 @@ class RelationExtractor(AbstractRelationExtractor):
     
     @classmethod
     def _check(cls, sentence, edge, resolver: PhrasesResolver) -> bool:
-        return edge.dep in cls._enhanced_deps if get_is_enhanced() else edge.dep in cls._deps
+        #return edge.dep in cls._enhanced_deps if get_is_enhanced() else edge.dep in cls._deps
+        return True #already checked in .importer.RelationsExtractors
 
     @abstractclassmethod
     def _extract(cls, sentence, edge, resolver: PhrasesResolver) -> Iterable[Relation]:
