@@ -88,3 +88,8 @@ class NmodWithinDependencyRelationExtractor(base.SpecialNmodDependencyRelationEx
     _rel = _rel
     _enhanced_deps = {"nmod:within"}
 
+class NmodInDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
+    """Extracts part_of relations from dependencies by nmod:in relation."""
+    _rel = _rel
+    _enhanced_deps = {"nmod:in"}
+
