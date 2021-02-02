@@ -64,6 +64,30 @@ def check_dep_lemma(sentence, dep_dict, dep, lemma) -> bool:
         if(token.lemma == lemma): return True
     return False
 
+class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
+    """Extracts relations from dependencies by source token."""
+    _rel: str
+    _second_dep: str
+    _invert_source_and_target = False
+    
+    @classmethod
+    def _extract(cls, sentence, edge, resolver):
+        if(check_word_negation(sentence, edge.source-1, resolver.source_edges_dict)): return []
+        dep_dict = resolver.source_edges_dict[edge.source-1]
+        if(cls._second_dep not in dep_dict): return []
+        obj_list = dep_dict[cls._second_dep]
+        rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
+        rels = set()
+        for rel_sourceID in obj_list:
+            rel_sources = resolver.get_resolved_phrases(sentence, rel_sourceID)
+            for rel_target in rel_targets:
+                for rel_source in rel_sources:
+                    if(cls._invert_source_and_target):
+                        rels.add(Relation(rel_target, cls._rel, rel_source))
+                    else:
+                        rels.add(Relation(rel_source, cls._rel, rel_target))
+        return rels
+
 class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
     """Extracts relations from dependencies by source token with case."""
     _rel: str
