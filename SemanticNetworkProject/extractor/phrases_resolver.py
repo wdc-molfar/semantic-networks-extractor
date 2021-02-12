@@ -56,6 +56,22 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
     token = sentence.token[tokenID]
     normalized_word = token.lemma if normalize and token.pos == "NNS" else token.word.lower() if token.ner == "O" else token.word
     normalized_phrases = [{tokenID: normalized_word}]
+    if(settings.get_is_enhanced()): #for "is a type of something"
+        target_dict = resolver.target_edges_dict.get(tokenID, None)
+        if(target_dict is not None and "fixed" in target_dict):
+            for fixed_tokenID in target_dict["fixed"]:
+                for fixed_targets_list in resolver.source_edges_dict[fixed_tokenID].values():
+                    for fixed_target_tokenID in fixed_targets_list:
+                        normalized_phrases[0][fixed_target_tokenID] = sentence.token[fixed_target_tokenID].lemma
+                if(fixed_tokenID in resolver.target_edges_dict):
+                    for fixed_sources_list in resolver.target_edges_dict[fixed_tokenID].values():
+                        for fixed_source_tokenID in fixed_sources_list:
+                            if(fixed_source_tokenID in normalized_phrases[0]): continue #cycle checking
+                            new_dicts = __get_normalized_phrases_dicts(sentence, fixed_source_tokenID, resolver, False)
+                            normalized_phrases = [{**current_dict, **new_dict}
+                                        for current_dict in normalized_phrases
+                                        for new_dict in new_dicts]
+
     if(tokenID not in resolver.source_edges_dict): return normalized_phrases
     for edge_dep, edge_targets_list in resolver.source_edges_dict[tokenID].items():
         for target_tokenID in edge_targets_list:
