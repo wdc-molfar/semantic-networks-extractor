@@ -3,6 +3,14 @@ from . import settings
 
 #NodeEdgesDict = Dict[int, Dict[str, int]]
 
+def check_dep_lemma(sentence, dep_dict, dep, lemma) -> bool:
+    if(dep not in dep_dict): return False
+    target_list = dep_dict[dep]
+    for targetID in target_list:
+        token = sentence.token[targetID]
+        if(token.lemma == lemma): return True
+    return False
+
 def check_negation(sentence, dep, targetID):
     if(dep == "neg"): return True
 
@@ -95,6 +103,10 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
                                         for new_dict in new_dicts]
 
             elif(edge_dep.startswith("nmod")):
+                #"such as" checking
+                if((settings.get_is_enhanced() and edge_dep == "nmod:such_as") or
+                   check_dep_lemma(sentence, resolver.source_edges_dict[target_tokenID], "case", "such")): continue
+
                 new_dicts = __get_normalized_phrases_dicts(sentence, target_tokenID, resolver, False)
                 if(edge_dep == "nmod:poss"):
                     target_token = sentence.token[target_tokenID]

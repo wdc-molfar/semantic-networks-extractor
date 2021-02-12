@@ -1,6 +1,6 @@
 from abc import ABC, abstractclassmethod
 from typing import Iterable, Set, NamedTuple
-from ..phrases_resolver import PhrasesResolver, check_word_negation
+from ..phrases_resolver import PhrasesResolver, check_word_negation, check_dep_lemma
 from ..settings import get_is_enhanced
 
 class Relation(NamedTuple):
@@ -55,14 +55,6 @@ class DependencyRelationExtractor(RelationExtractor):
 #class TargetRelationExtractor(RelationExtractor):
 #    """Extracts specific relations from dependencies by target token."""
 #    pass
-
-def check_dep_lemma(sentence, dep_dict, dep, lemma) -> bool:
-    if(dep not in dep_dict): return False
-    target_list = dep_dict[dep]
-    for targetID in target_list:
-        token = sentence.token[targetID]
-        if(token.lemma == lemma): return True
-    return False
 
 class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
     """Extracts relations from dependencies by source token."""
