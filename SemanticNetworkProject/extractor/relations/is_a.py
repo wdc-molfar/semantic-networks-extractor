@@ -4,6 +4,16 @@ from ..settings import get_is_enhanced
 
 _rel = "is_a"
 
+class AmodIsADependencyRelationExtractor(base.DecomposingDependencyRelationExtractor):
+    """Extracts is_a relations from dependencies by amod dependency."""
+    _rel = _rel
+    _deps = {"amod"}
+    
+class NmodForIsADependencyRelationExtractor(base.DecomposingDependencyRelationExtractor):
+    """Extracts is_a relations from dependencies by nmod:for dependency."""
+    _rel = _rel
+    _enhanced_deps = {"nmod:for"}
+
 class RootIsASourceRelationExtractor(base.SpecialRootSourceRelationExtractor):
     """Extracts is_a relations from dependencies by source token."""
     _rel = _rel

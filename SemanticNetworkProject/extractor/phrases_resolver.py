@@ -60,7 +60,7 @@ class PhrasesResolver:
         self.phrases_dict[tokenID] = resolved
         return resolved
 
-def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, normalize = True):
+def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, normalize = True, ignored_tokenID = -1):
     token = sentence.token[tokenID]
     normalized_word = token.lemma if normalize and token.pos.startswith("NN") and token.pos.endswith("S") else token.word.lower() if token.ner == "O" else token.word
     normalized_phrases = [{tokenID: normalized_word}]
@@ -83,6 +83,7 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
     if(tokenID not in resolver.source_edges_dict): return normalized_phrases
     for edge_dep, edge_targets_list in resolver.source_edges_dict[tokenID].items():
         for target_tokenID in edge_targets_list:
+            if(target_tokenID == ignored_tokenID): continue
             if(check_negation(sentence, edge_dep, target_tokenID)): return []
 
             if(settings.get_is_enhanced()):
@@ -137,12 +138,12 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
                 normalized_phrases.extend(__get_normalized_phrases_dicts(sentence, target_tokenID, resolver, normalize))
     return normalized_phrases
 
-def resolve_phrases(sentence, tokenID, resolver: PhrasesResolver):
-    phrases_dicts = __get_normalized_phrases_dicts(sentence, tokenID, resolver)
+def resolve_phrases(sentence, tokenID, resolver: PhrasesResolver, ignored_tokenID = -1):
+    phrases_dicts = __get_normalized_phrases_dicts(sentence, tokenID, resolver, ignored_tokenID=ignored_tokenID)
     phrases = [' '.join([phrase_dict[key] for key in sorted(phrase_dict)]) for phrase_dict in phrases_dicts]
     return phrases
 
-def resolve_phrases_from_coref_dict(sentence, tokenID, coref_dict):
+def resolve_phrases_from_coref_dict(sentence, tokenID, coref_dict, ignored_tokenID = -1):
     resolver = PhrasesResolver(coref_dict)
     resolver.fill_dicts(sentence)
-    return resolve_phrases(sentence, tokenID, resolver)
+    return resolve_phrases(sentence, tokenID, resolver, ignored_tokenID)
