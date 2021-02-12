@@ -16,11 +16,13 @@ class AbstractRelationExtractor(ABC):
 
 class RelationExtractor(AbstractRelationExtractor):
     """Extracts specific relations from dependencies."""
+    _rel: str
     _deps: Set[str]
     _enhanced_deps: Set[str]
 
     @classmethod
     def static_init(cls):
+        if(not hasattr(cls, "_rel")): raise Exception("Extractor has no relation type!")
         if(not hasattr(cls, "_enhanced_deps")):
             cls._enhanced_deps = cls._deps
     
@@ -58,7 +60,6 @@ class DependencyRelationExtractor(RelationExtractor):
 
 class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
     """Extracts relations from dependencies by source token."""
-    _rel: str
     _second_dep: str
     _second_case: str
     _enhanced_second_dep: str
@@ -69,10 +70,10 @@ class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
         super().static_init()
         if(not hasattr(cls, "_enhanced_second_dep")):
             cls._enhanced_second_dep = cls._second_dep
-            if(not hasattr(cls, "_second_case")):
-                cls._second_case = cls._enhanced_second_dep.rpartition(':')[2]
         elif(not hasattr(cls, "_second_dep")):
             cls._second_dep = cls._enhanced_second_dep.rpartition(':')[0]
+            if(not hasattr(cls, "_second_case")):
+                cls._second_case = cls._enhanced_second_dep.rpartition(':')[2]
     
     @classmethod
     def _extract(cls, sentence, edge, resolver):
@@ -105,7 +106,6 @@ class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
 
 class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
     """Extracts relations from dependencies by source token with case."""
-    _rel: str
     _second_dep: str
     _enhanced_second_dep: str
     _case: str
@@ -144,11 +144,28 @@ class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
                         rels.add(Relation(rel_source, cls._rel, rel_target))
         return rels
 
-class SpecialNmodDependencyRelationExtractor(DependencyRelationExtractor):
-    """Extracts relations from dependencies by nmod dependencies."""
-    _rel: str
-    _deps = {"nmod"}
+class SimpleDependencyRelationExtractor(DependencyRelationExtractor):
+    """Extracts relations from dependencies by dependency type."""
     _invert_source_and_target = False
+
+    @classmethod
+    def _extract(cls, sentence, edge, resolver):
+        rels = set()   
+        if(cls._invert_source_and_target):
+            rel_sources = resolver.get_resolved_phrases(sentence, edge.target-1)
+            rel_targets = resolver.get_resolved_phrases(sentence, edge.source-1)
+        else:
+            rel_sources = resolver.get_resolved_phrases(sentence, edge.source-1)
+            rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
+
+        for rel_source in rel_sources:
+            for rel_target in rel_targets:
+                rels.add(Relation(rel_source, cls._rel, rel_target))
+        return rels
+
+class SpecialNmodDependencyRelationExtractor(SimpleDependencyRelationExtractor):
+    """Extracts relations from dependencies by nmod dependencies."""
+    _deps = {"nmod"}
     _need_enhanced_checking = False
     _not_enhanced_dep = "case"
     _not_enhanced_lemma: str
@@ -163,20 +180,9 @@ class SpecialNmodDependencyRelationExtractor(DependencyRelationExtractor):
                 cls._not_enhanced_lemma = next(iter(cls._enhanced_deps)).rpartition(':')[2]
 
     @classmethod
-    def _extract(cls, sentence, edge, resolver):
+    def _check(cls, sentence, edge, resolver):
+        if(not super()._check(sentence, edge, resolver)): return False
         if(cls._need_enhanced_checking and not get_is_enhanced()):
             dep_dict = resolver.source_edges_dict[edge.target-1]
-            if(not check_dep_lemma(sentence, dep_dict, cls._not_enhanced_dep, cls._not_enhanced_lemma)): return []
-         
-        rels = set()   
-        if(cls._invert_source_and_target):
-            rel_sources = resolver.get_resolved_phrases(sentence, edge.target-1)
-            rel_targets = resolver.get_resolved_phrases(sentence, edge.source-1)
-        else:
-            rel_sources = resolver.get_resolved_phrases(sentence, edge.source-1)
-            rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
-
-        for rel_source in rel_sources:
-            for rel_target in rel_targets:
-                rels.add(Relation(rel_source, cls._rel, rel_target))
-        return rels
+            return check_dep_lemma(sentence, dep_dict, cls._not_enhanced_dep, cls._not_enhanced_lemma)
+        return True

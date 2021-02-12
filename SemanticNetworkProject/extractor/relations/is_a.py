@@ -13,6 +13,7 @@ class RootIsASourceRelationExtractor(base.SpecialRootSourceRelationExtractor):
 
 class NounsNmodIsADependencyRelationExtractor(base.DependencyRelationExtractor):
     """Extracts is_a relations from dependencies by nsubj dependency."""
+    _rel = _rel
     _deps = {"nsubj"}
     _no_inverse_target_lemmas = {"type", "kind", "sort"}
 
