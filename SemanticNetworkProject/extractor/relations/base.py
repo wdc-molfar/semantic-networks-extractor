@@ -137,7 +137,8 @@ class SpecialNmodDependencyRelationExtractor(DependencyRelationExtractor):
         if(cls._enhanced_deps != cls._deps):
             cls._need_enhanced_checking = True
             if(len(cls._enhanced_deps) != 1): raise Exception("Class can handle only 1 'nmod' dependency type!")
-            cls._not_enhanced_lemma = next(iter(cls._enhanced_deps)).rpartition(':')[2]
+            if(not hasattr(cls, "_not_enhanced_lemma")):
+                cls._not_enhanced_lemma = next(iter(cls._enhanced_deps)).rpartition(':')[2]
 
     @classmethod
     def _extract(cls, sentence, edge, resolver):

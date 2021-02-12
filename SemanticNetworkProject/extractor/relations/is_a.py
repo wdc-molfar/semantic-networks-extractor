@@ -35,3 +35,10 @@ class NounsNmodIsADependencyRelationExtractor(base.DependencyRelationExtractor):
             for rel_target in rel_targets:
                 rels.add(base.Relation(rel_source, _rel, rel_target))
         return rels
+    
+class NmodSuchAsIsADependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
+    """Extracts is_a relations from dependencies by nmod:such_as dependency."""
+    _rel = _rel
+    _enhanced_deps = {"nmod:such_as"}
+    _not_enhanced_lemma = "such"
+    _invert_source_and_target = True
