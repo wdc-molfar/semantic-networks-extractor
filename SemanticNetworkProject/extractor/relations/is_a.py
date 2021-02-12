@@ -42,3 +42,10 @@ class NmodSuchAsIsADependencyRelationExtractor(base.SpecialNmodDependencyRelatio
     _enhanced_deps = {"nmod:such_as"}
     _not_enhanced_lemma = "such"
     _invert_source_and_target = True
+    
+class RefferedToAsIsASourceRelationExtractor(base.SpecialRootSourceRelationExtractor):
+    """Extracts is_a relations from dependencies by reffered to as."""
+    _rel = _rel
+    _deps = {"nsubj:pass"}
+    _lemmas = {"refer"}
+    _enhanced_second_dep = "obl:as"

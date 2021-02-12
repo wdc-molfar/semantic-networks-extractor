@@ -96,7 +96,7 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
                              if target_dep.startswith('conj')), False)):
                         continue
 
-            if(edge_dep == "amod" or edge_dep == "advmod" or edge_dep == "compound"):
+            if(edge_dep == "amod" or edge_dep == "advmod" or edge_dep == "compound" or (edge_dep == "nummod" and not normalize)):
                 new_dicts = __get_normalized_phrases_dicts(sentence, target_tokenID, resolver, False)
                 normalized_phrases = [{**current_dict, **new_dict}
                                         for current_dict in normalized_phrases

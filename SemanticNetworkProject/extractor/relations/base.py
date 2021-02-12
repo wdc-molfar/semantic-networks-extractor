@@ -60,14 +60,37 @@ class SpecialRootSourceRelationExtractor(SourceRelationExtractor):
     """Extracts relations from dependencies by source token."""
     _rel: str
     _second_dep: str
+    _second_case: str
+    _enhanced_second_dep: str
     _invert_source_and_target = False
+    
+    @classmethod
+    def static_init(cls):
+        super().static_init()
+        if(not hasattr(cls, "_enhanced_second_dep")):
+            cls._enhanced_second_dep = cls._second_dep
+            if(not hasattr(cls, "_second_case")):
+                cls._second_case = cls._enhanced_second_dep.rpartition(':')[2]
+        elif(not hasattr(cls, "_second_dep")):
+            cls._second_dep = cls._enhanced_second_dep.rpartition(':')[0]
     
     @classmethod
     def _extract(cls, sentence, edge, resolver):
         if(check_word_negation(sentence, edge.source-1, resolver.source_edges_dict)): return []
         dep_dict = resolver.source_edges_dict[edge.source-1]
-        if(cls._second_dep not in dep_dict): return []
-        obj_list = dep_dict[cls._second_dep]
+        if(get_is_enhanced()):
+            if(cls._enhanced_second_dep not in dep_dict): return []
+            obj_list = dep_dict[cls._enhanced_second_dep]
+        else:
+            if(cls._second_dep not in dep_dict): return []
+            obj_list = dep_dict[cls._second_dep]
+            if(hasattr(cls, "_second_case")):
+                for obj_tokenID in obj_list:
+                    if(obj_tokenID not in resolver.source_edges_dict): continue
+                    obj_dep_dict = resolver.source_edges_dict[obj_tokenID]
+                    if(check_dep_lemma(sentence, obj_dep_dict, "case", cls._second_case)): break
+                else: return []
+
         rel_targets = resolver.get_resolved_phrases(sentence, edge.target-1)
         rels = set()
         for rel_sourceID in obj_list:
@@ -103,7 +126,6 @@ class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
         else:
             if(cls._second_dep not in dep_dict): return []
             obj_list = dep_dict[cls._second_dep]
-            has_of = False
             for obj_tokenID in obj_list:
                 if(obj_tokenID not in resolver.source_edges_dict): continue
                 obj_dep_dict = resolver.source_edges_dict[obj_tokenID]
