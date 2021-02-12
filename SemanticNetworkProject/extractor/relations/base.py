@@ -131,7 +131,7 @@ class SpecialRootWithCaseSourceRelationExtractor(SourceRelationExtractor):
         return rels
 
 class SpecialNmodDependencyRelationExtractor(DependencyRelationExtractor):
-    """Extracts relations from dependencies by nmod relations."""
+    """Extracts relations from dependencies by nmod dependencies."""
     _rel: str
     _deps = {"nmod"}
     _invert_source_and_target = False

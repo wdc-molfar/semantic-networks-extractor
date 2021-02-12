@@ -30,6 +30,9 @@
     <Compile Include="extractor\relations\importer.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="extractor\relations\is_a.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="extractor\relations\part_of.py">
       <SubType>Code</SubType>
     </Compile>

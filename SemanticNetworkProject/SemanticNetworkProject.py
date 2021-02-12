@@ -28,13 +28,14 @@ if not os.path.isfile(f"./models/stanford-corenlp-{version}-models-{language}.ja
 #input_text = "United States of America is a country. It is very large. Barack Obama was a president of it. His daughters are Sasha and Malia. They were one of the most influential teenagers of 2014."
 #input_text = "There are neither green nor yellow cubes on the table."
 #input_text = "Middle ear has anvil and stirrup. Middle ear contains anvil and stirrup. Middle ear includes anvil and stirrup. Middle ear is made of anvil and stirrup. Middle ear consists of anvil and stirrup."
-input_text = "Doors of the car. The car’s door is open. The car with a door. A segment is a part of a circle. A circle is a set of points. Points within the figure. Functions used within Geometry. The imaginary axis is the vertical line in a complex plane. The altitude with the hypotenuse as base divides the hypotenuse into two lengths. The first part of the ear the sound waves reach is called the tympanic membrane. Middle ear consists of anvil and stirrup."
+#input_text = "Doors of the car. The car’s door is open. The car with a door. A segment is a part of a circle. A circle is a set of points. Points within the figure. Functions used within Geometry. The imaginary axis is the vertical line in a complex plane. The altitude with the hypotenuse as base divides the hypotenuse into two lengths. The tympanic membrane is also called the eardrum. Middle ear consists of anvil and stirrup."
+input_text = "A semantic network is a graph structure for representing knowledge. A circle is a set of points. The tympanic membrane is also called the eardrum. The Sun is a type of star, known as a yellow dwarf. The most common type of animal is a herbivore. The most common type of animal is called a herbivore. Examples of number systems include: natural numbers, integers, rational numbers, real numbers, and complex numbers. Dolphins are among smartest animals."
 
 set_dep_type("enhancedPlusPlusDependencies")
 #set_dep_type("basicDependencies")
 
 RelationsExtractors.use_all_relations()
-#RelationsExtractors.use_relations(["part_of"])
+#RelationsExtractors.use_relations(["is_a", "part_of"])
 
 #java -Xmx5G -cp C:\Users\Alexander\stanza_corenlp\* edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 60000 -threads 5 -maxCharLength 100000 -quiet False -serverProperties english -annotators tokenize,ssplit,pos,lemma,ner,depparse,coref -preload -outputFormat serialized
 with CoreNLPClient(properties=language, start_server=stanza.server.StartServer.DONT_START, annotators="tokenize,ssplit,pos,lemma,ner,depparse,coref") as client:

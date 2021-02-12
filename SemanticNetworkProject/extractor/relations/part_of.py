@@ -69,12 +69,18 @@ class DividedToPartOfSourceRelationExtractor(base.SpecialRootWithCaseSourceRelat
     _case = "to"
 
 class NmodOfPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod:of relation."""
+    """Extracts part_of relations from dependencies by nmod:of dependency."""
     _rel = _rel
     _enhanced_deps = {"nmod:of"}
+    #_ingore_source_lemmas = {"type", "kind", "sort"} #Is it OK?
     _inverse_source_lemmas = {"family", "arrangement", "group", "operation", "property", "set", "union",
                                 "intersection", "use", "combination", "aggregation", "sum", "function"}
     
+    #@classmethod
+    #def _check(cls, sentence, edge, resolver) -> bool:
+    #    if(not super()._check(sentence, edge, resolver)): return False
+    #    return sentence.token[edge.source-1].lemma not in cls._ingore_source_lemmas
+
     @classmethod
     def _extract(cls, sentence, edge, resolver):
         rels = super()._extract(sentence, edge, resolver)
@@ -85,22 +91,22 @@ class NmodOfPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelation
         else: return rels        
 
 class NmodPossPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod:poss relation."""
+    """Extracts part_of relations from dependencies by nmod:poss dependency."""
     _rel = _rel
     _deps = {"nmod:poss"}
 
 class NmodWithPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod:with relation."""
+    """Extracts part_of relations from dependencies by nmod:with dependency."""
     _rel = _rel
     _enhanced_deps = {"nmod:with"}
     _invert_source_and_target = True
 
 class NmodWithinPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod:within relation."""
+    """Extracts part_of relations from dependencies by nmod:within dependency."""
     _rel = _rel
     _enhanced_deps = {"nmod:within"}
 
 class NmodInPartOfDependencyRelationExtractor(base.SpecialNmodDependencyRelationExtractor):
-    """Extracts part_of relations from dependencies by nmod:in relation."""
+    """Extracts part_of relations from dependencies by nmod:in dependency."""
     _rel = _rel
     _enhanced_deps = {"nmod:in"}
