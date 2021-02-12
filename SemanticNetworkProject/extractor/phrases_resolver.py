@@ -54,7 +54,7 @@ class PhrasesResolver:
 
 def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, normalize = True):
     token = sentence.token[tokenID]
-    normalized_word = token.lemma if normalize and token.pos == "NNS" else token.word.lower() if token.ner == "O" else token.word
+    normalized_word = token.lemma if normalize and token.pos.startswith("NN") and token.pos.endswith("S") else token.word.lower() if token.ner == "O" else token.word
     normalized_phrases = [{tokenID: normalized_word}]
     if(settings.get_is_enhanced()): #for "is a type of something"
         target_dict = resolver.target_edges_dict.get(tokenID, None)
