@@ -48,11 +48,21 @@
     <Compile Include="extractor\phrases_resolver.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="handlers\base.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="handlers\neo4j.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="handlers\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SemanticNetworkProject.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="extractor\" />
     <Folder Include="extractor\relations\" />
+    <Folder Include="handlers\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

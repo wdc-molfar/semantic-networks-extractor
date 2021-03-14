@@ -4,6 +4,7 @@ from stanza.server import CoreNLPClient
 from extractor.core import InformationExtractor
 from extractor.settings import set_dep_type
 from extractor.relations.importer import RelationsExtractors
+from handlers.neo4j import Neo4jHandler
 
 #lang = "en"
 #stanza.download(lang)
@@ -41,6 +42,8 @@ RelationsExtractors.use_all_relations()
 with CoreNLPClient(properties=language, start_server=stanza.server.StartServer.DONT_START, annotators="tokenize,ssplit,pos,lemma,ner,depparse,coref") as client:
       document = client.annotate(input_text)
       ie = InformationExtractor()
-      ie.extract(document)
-      print(ie.resolved_coreferences)
-#TODO: save to Neo4j
+      saver = Neo4jHandler("bolt://localhost:7687", "neo4j", "password")
+      saver.handle(ie.extract(document))
+      #print(ie.extract(document))
+      #print(ie.resolved_coreferences)
+
