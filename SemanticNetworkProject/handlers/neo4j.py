@@ -4,8 +4,9 @@ from extractor.relations.base import Relation
 
 class Neo4jHandler(AbstractRelationsHandler):
     """Saves relations to Neo4j."""
-    def __init__(self, uri, user, password):
+    def __init__(self, uri, user, password, clear=False):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        self.clear = clear
 
     def close(self):
         self.driver.close()
@@ -18,6 +19,11 @@ class Neo4jHandler(AbstractRelationsHandler):
         if (type is not None):
             print(value)
             return False
+    
+    @staticmethod
+    def _clear_database(tx):
+        tx.run("MATCH (n) DETACH DELETE n");
+        return None
 
     @staticmethod
     def _create_relation(tx, relation: Relation):
@@ -29,6 +35,8 @@ class Neo4jHandler(AbstractRelationsHandler):
 
     def handle(self, relations):
         with self.driver.session() as session:
+            if(self.clear):
+                session.write_transaction(self._clear_database)
             for relation in relations:
                 session.write_transaction(self._create_relation, relation)
 
