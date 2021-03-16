@@ -227,8 +227,16 @@ class DecomposingDependencyRelationExtractor(DependencyRelationExtractor):
         if(len(rel_sources) == len(rel_targets)):
             for rel_source, rel_target in zip(rel_sources, rel_targets):
                 rels.add(Relation(rel_source, cls._rel, rel_target))
+        elif(len(rel_targets) == 1):
+            rel_target = next(iter(rel_targets))
+            for rel_source in rel_sources:
+                rels.add(Relation(rel_source, cls._rel, rel_target))
+        elif(len(rel_sources) == 1):
+            rel_source = next(iter(rel_sources))
+            for rel_target in rel_targets:
+                rels.add(Relation(rel_source, cls._rel, rel_target))
         elif(len(rel_sources) == 0 or len(rel_targets) == 0):
             pass
         else:
-            raise Exception(f"Unexpected situation: len(sources) = {len(rel_sources)}, len(targets) = {len(rel_targets)} - not equal!")
+            raise Exception(f"Unexpected situation: len(sources) = {len(rel_sources)}, len(targets) = {len(rel_targets)}.")
         return rels
