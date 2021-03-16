@@ -106,7 +106,7 @@ def __get_normalized_phrases_dicts(sentence, tokenID, resolver:PhrasesResolver, 
             elif(edge_dep.startswith("nmod")):
                 #"such as" checking
                 if((settings.get_is_enhanced() and edge_dep == "nmod:such_as") or
-                   check_dep_lemma(sentence, resolver.source_edges_dict[target_tokenID], "case", "such")): continue
+                   (target_tokenID in resolver.source_edges_dict and check_dep_lemma(sentence, resolver.source_edges_dict[target_tokenID], "case", "such"))): continue
 
                 new_dicts = __get_normalized_phrases_dicts(sentence, target_tokenID, resolver, False)
                 if(edge_dep == "nmod:poss"):
