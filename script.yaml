@@ -1,0 +1,31 @@
+# Prepare graph:
+- aggregate:
+    - transform:
+        from:
+          $: "data.dependencies.nodes"
+        action: "(nodes) => nodes.map(({ id, ...attributes }) => ({ key: id, attributes }))"
+        into: "initial_graph.nodes"
+    - transform:
+        from:
+          $: "data.dependencies.links"
+        action: "(links) => links.map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes }))"
+        into: "initial_graph.edges"
+    - transform:
+        from:
+          $: "data"
+        action: "({ dependencies: { nodes, links, ...deps_info }, ...data_info }) => ({ ...data_info, ...deps_info })"
+        into: "initial_graph.attributes"
+# Import graph:
+- import_graph:
+    from:
+      $: "initial_graph"
+    type: "directed"
+    into: "initial_graph"
+
+# TODO: Add graph transformation logic
+
+# Export graph:
+- export_graph:
+    from:
+      $: "initial_graph"
+    into: "output"

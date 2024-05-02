@@ -1,0 +1,305 @@
+{
+  "sentiment": "neutral",
+  "named_entities": [
+    {
+      "name": "America",
+      "tag": "NORP",
+      "range": {
+        "start": 24,
+        "end": 33
+      }
+    },
+    {
+      "name": "Joe Biden",
+      "tag": "PERSON",
+      "range": {
+        "start": 44,
+        "end": 53
+      }
+    },
+    {
+      "name": "Zelensky",
+      "tag": "PERSON",
+      "range": {
+        "start": 69,
+        "end": 79
+      }
+    }
+  ],
+  "dependencies": {
+    "nodes": [
+      {
+        "id": "1-1",
+        "name": "I",
+        "value": "I",
+        "category": 10,
+        "coreference": []
+      },
+      {
+        "id": "1-2",
+        "name": "be",
+        "value": "am",
+        "category": 3,
+        "coreference": []
+      },
+      {
+        "id": "1-3",
+        "name": "currently",
+        "value": "currently",
+        "category": 2,
+        "coreference": []
+      },
+      {
+        "id": "1-4",
+        "name": "fight",
+        "value": "fighting",
+        "category": 15,
+        "coreference": []
+      },
+      {
+        "id": "1-5",
+        "name": "America",
+        "value": "America",
+        "category": 11,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": true
+          }
+        ]
+      },
+      {
+        "id": "1-6",
+        "name": "'s",
+        "value": "'s",
+        "category": 9,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": true
+          }
+        ]
+      },
+      {
+        "id": "1-7",
+        "name": "president",
+        "value": "president",
+        "category": 7,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": true
+          }
+        ]
+      },
+      {
+        "id": "1-8",
+        "name": "Joe",
+        "value": "Joe",
+        "category": 11,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": true
+          }
+        ]
+      },
+      {
+        "id": "1-9",
+        "name": "Biden",
+        "value": "Biden",
+        "category": 11,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": true
+          }
+        ]
+      },
+      {
+        "id": "1-10",
+        "name": "and",
+        "value": "and",
+        "category": 4,
+        "coreference": []
+      },
+      {
+        "id": "1-11",
+        "name": "his",
+        "value": "his",
+        "category": 10,
+        "coreference": [
+          {
+            "coref_id": 0,
+            "is_representative": false
+          }
+        ]
+      },
+      {
+        "id": "1-12",
+        "name": "friend",
+        "value": "friend",
+        "category": 7,
+        "coreference": []
+      },
+      {
+        "id": "1-13",
+        "name": "Zelensky",
+        "value": "Zelensky",
+        "category": 11,
+        "coreference": []
+      },
+      {
+        "id": "1-14",
+        "name": "'s",
+        "value": "'s",
+        "category": 9,
+        "coreference": []
+      },
+      {
+        "id": "1-15",
+        "name": "army",
+        "value": "army",
+        "category": 7,
+        "coreference": []
+      },
+      {
+        "id": "1-16",
+        "name": ".",
+        "value": ".",
+        "category": 12,
+        "coreference": []
+      }
+    ],
+    "links": [
+      {
+        "source": "1-4",
+        "value": "nsubj",
+        "target": "1-1"
+      },
+      {
+        "source": "1-4",
+        "value": "aux",
+        "target": "1-2"
+      },
+      {
+        "source": "1-4",
+        "value": "advmod",
+        "target": "1-3"
+      },
+      {
+        "source": "1-7",
+        "value": "nmod:poss",
+        "target": "1-5"
+      },
+      {
+        "source": "1-5",
+        "value": "case",
+        "target": "1-6"
+      },
+      {
+        "source": "1-4",
+        "value": "obj",
+        "target": "1-7"
+      },
+      {
+        "source": "1-7",
+        "value": "flat",
+        "target": "1-8"
+      },
+      {
+        "source": "1-7",
+        "value": "flat",
+        "target": "1-9"
+      },
+      {
+        "source": "1-15",
+        "value": "cc",
+        "target": "1-10"
+      },
+      {
+        "source": "1-12",
+        "value": "nmod:poss",
+        "target": "1-11"
+      },
+      {
+        "source": "1-15",
+        "value": "nmod:poss",
+        "target": "1-12"
+      },
+      {
+        "source": "1-12",
+        "value": "appos",
+        "target": "1-13"
+      },
+      {
+        "source": "1-12",
+        "value": "case",
+        "target": "1-14"
+      },
+      {
+        "source": "1-7",
+        "value": "conj",
+        "target": "1-15"
+      },
+      {
+        "source": "1-4",
+        "value": "punct",
+        "target": "1-16"
+      }
+    ],
+    "categories": [
+      {
+        "name": "ADJ"
+      },
+      {
+        "name": "ADP"
+      },
+      {
+        "name": "ADV"
+      },
+      {
+        "name": "AUX"
+      },
+      {
+        "name": "CCONJ"
+      },
+      {
+        "name": "DET"
+      },
+      {
+        "name": "INTJ"
+      },
+      {
+        "name": "NOUN"
+      },
+      {
+        "name": "NUM"
+      },
+      {
+        "name": "PART"
+      },
+      {
+        "name": "PRON"
+      },
+      {
+        "name": "PROPN"
+      },
+      {
+        "name": "PUNCT"
+      },
+      {
+        "name": "SCONJ"
+      },
+      {
+        "name": "SYM"
+      },
+      {
+        "name": "VERB"
+      },
+      {
+        "name": "X"
+      }
+    ]
+  }
+}

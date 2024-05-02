@@ -1,0 +1,27 @@
+{
+  "name": "@molfar/semantic-networks-extractor",
+  "version": "1.0.0",
+  "description": "Semantic network extractor from annotated text",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdc-molfar/semantic-networks-extractor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wdc-molfar/semantic-networks-extractor/issues"
+  },
+  "homepage": "https://github.com/wdc-molfar/semantic-networks-extractor#readme",
+  "dependencies": {
+    "@molfar/service-chassis": "github:wdc-molfar/service-chassis",
+    "graphology": "^0.25.4",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "uuid": "^9.0.1"
+  }
+}
