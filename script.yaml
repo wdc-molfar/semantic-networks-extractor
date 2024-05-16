@@ -23,6 +23,42 @@
     into: "graph"
     #TODO: formats (key or function for custom formats)
 
+# Add coreference edges:
+- filterNodes:
+    from:
+      $: "graph"
+    as: "$node"
+    where: "$node.coreference.length > 0"
+    resolve_nodes: true
+    into: "coref_nodes"
+- context:
+    from:
+      $: "coref_nodes"
+    action: >
+      (coref_nodes, { graph }) => _.values(_.groupBy(coref_nodes.flatMap(node => node.coreference.map(coref => ({
+          key: node.key,
+          is_representative: coref.is_representative,
+          coref_id: coref.coref_id,
+      }))), 'coref_id')).forEach(coref_group => {
+        const representatives = coref_group.filter(node => node.is_representative);
+        const pronouns = coref_group.filter(node => !node.is_representative);
+        pronouns.forEach(pronoun => {
+            representatives.forEach(representative => {
+                graph.addEdgeWithKey(`(${pronoun.key})->(${representative.key})`, pronoun.key, representative.key, {
+                    type: 'coreference',
+                    coref_id: pronoun.coref_id,
+                });
+            });
+        });
+      })
+- forEachNode:
+    from:
+      $: "graph"
+    as: "$node"
+    do: "delete $node.coreference"
+- delete: "coref_nodes"
+
+# Counting POS categories:
 - reduceNodes:
     from:
       $: "graph"
@@ -31,20 +67,6 @@
     initialValue: {}
     reduce: "$categories[$node.category] = ($categories[$node.category] || 0) + 1, $categories"
     into: "pos_categories_count"
-
-# Add coreference edges:
-- aggregate:
-    - filterNodes:
-        from:
-          $: "graph"
-        as: "$node"
-        where: "$node.coreference.length > 0"
-        resolve_nodes: true
-        into: "coref_nodes"
-    # TODO: Add coreference edges
-#    - delete: "coref_nodes"
-
-# TODO: Add graph transformation logic
 
 # Export graph:
 - export_graph:
