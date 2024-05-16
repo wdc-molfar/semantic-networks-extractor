@@ -1,31 +1,54 @@
 # Prepare graph:
 - aggregate:
-    - transform:
+    - context:
         from:
-          $: "data.dependencies.nodes"
-        action: "(nodes) => nodes.map(({ id, ...attributes }) => ({ key: id, attributes }))"
-        into: "initial_graph.nodes"
-    - transform:
-        from:
-          $: "data.dependencies.links"
-        action: "(links) => links.map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes }))"
-        into: "initial_graph.edges"
-    - transform:
+          $: "data.dependencies"
+        action: >
+          ({ nodes, links, categories }) => ({
+              nodes: nodes.map(({ id, ...attributes }) => ({ key: id, attributes: { ...attributes, category: categories[attributes.category].name } })),
+              edges: links.map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes })),
+          })
+        into: "graph"
+    - context:
         from:
           $: "data"
-        action: "({ dependencies: { nodes, links, ...deps_info }, ...data_info }) => ({ ...data_info, ...deps_info })"
-        into: "initial_graph.attributes"
+        action: "({ dependencies: { nodes, links, categories, ...deps_info }, ...data_info }) => ({ ...data_info, ...deps_info })"
+        into: "graph.attributes"
+    - delete: "data"
 # Import graph:
 - import_graph:
     from:
-      $: "initial_graph"
+      $: "graph"
     type: "directed"
-    into: "initial_graph"
+    into: "graph"
+    #TODO: formats (key or function for custom formats)
+
+- reduceNodes:
+    from:
+      $: "graph"
+    as: "$node"
+    accumulator: "$categories"
+    initialValue: {}
+    reduce: "$categories[$node.category] = ($categories[$node.category] || 0) + 1, $categories"
+    into: "pos_categories_count"
+
+# Add coreference edges:
+- aggregate:
+    - filterNodes:
+        from:
+          $: "graph"
+        as: "$node"
+        where: "$node.coreference.length > 0"
+        resolve_nodes: true
+        into: "coref_nodes"
+    # TODO: Add coreference edges
+#    - delete: "coref_nodes"
 
 # TODO: Add graph transformation logic
 
 # Export graph:
 - export_graph:
     from:
-      $: "initial_graph"
-    into: "output"
+      $: "graph"
+    into: "graph"
+    #TODO: formats

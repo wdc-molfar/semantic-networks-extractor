@@ -19,9 +19,8 @@ module.exports = {
     },
     commands: [
         {
-            name: ["aggregate", "context"],
+            name: ["aggregate"],
             _execute: async (command, context) => {
-                command.aggregate = command.aggregate || command.context
                 for (let i = 0; i < command.aggregate.length; i++) {
                     context = await extractorInstance.executeOnce(command.aggregate[i], context)
                 }
@@ -29,8 +28,9 @@ module.exports = {
             }
         },
         {
-            name: ["transform"],
+            name: ["transform", "context"],
             _execute: async (command, context) => {
+                command.transform = command.transform || command.context
                 const inputValue = resolveValue(command.transform.from || command.transform.variable, context, undefined)
                 const value = await transform(command.transform.action || command.transform.function, inputValue, context)
                 _.set(context, command.transform.to || command.transform.into, value)
@@ -40,8 +40,16 @@ module.exports = {
         {
             name: ["value", "const"],
             _execute: async (command, context) => {
+                command.value = command.value || command.const
                 const value = await transform( command.value.transform || command.value.set, undefined, context)
                 _.set(context, command.value.into, value)
+                return context
+            }
+        },
+        {
+            name: ["delete", "remove"],
+            _execute: async (command, context) => {
+                _.unset(context, command.delete || command.remove)
                 return context
             }
         },

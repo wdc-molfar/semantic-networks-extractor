@@ -12,7 +12,7 @@ const extractor = new SemNetExtractor()
 const run = async () => {
     const context = await extractor.execute(script, { data })
 
-    console.log(context.output)
+    //console.log(context.output)
 
     const output_path = "./output.json"
     fs.writeFileSync(output_path, JSON.stringify(context, null, 2));
