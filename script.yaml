@@ -1,64 +1,25 @@
-# Prepare graph:
-- aggregate:
-    - context:
-        from:
-          $: "data.dependencies"
-        action: >
-          ({ nodes, links, categories }) => ({
-              nodes: nodes.map(({ id, ...attributes }) => ({ key: id, attributes: { ...attributes, category: categories[attributes.category].name } })),
-              edges: links.map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes })),
-          })
-        into: "graph"
-    - context:
-        from:
-          $: "data"
-        action: "({ dependencies: { nodes, links, categories, ...deps_info }, ...data_info }) => ({ ...data_info, ...deps_info })"
-        into: "graph.attributes"
-    - delete: "data"
-# Import graph:
+# Import graph
 - import_graph:
     from:
-      $: "graph"
+      $: "data"
+    format: "ECharts"
     type: "directed"
+    resolve_coreferences: true
     into: "graph"
-    #TODO: formats (key or function for custom formats)
 
-# Add coreference edges:
+# Delete initial data
+- delete: "data"
+
+# Get all proper nouns
 - filterNodes:
     from:
       $: "graph"
     as: "$node"
-    where: "$node.coreference.length > 0"
+    where: "$node.category === 'PROPN'"
     resolve_nodes: true
-    into: "coref_nodes"
-- context:
-    from:
-      $: "coref_nodes"
-    action: >
-      (coref_nodes, { graph }) => _.values(_.groupBy(coref_nodes.flatMap(node => node.coreference.map(coref => ({
-          key: node.key,
-          is_representative: coref.is_representative,
-          coref_id: coref.coref_id,
-      }))), 'coref_id')).forEach(coref_group => {
-        const representatives = coref_group.filter(node => node.is_representative);
-        const pronouns = coref_group.filter(node => !node.is_representative);
-        pronouns.forEach(pronoun => {
-            representatives.forEach(representative => {
-                graph.addEdgeWithKey(`(${pronoun.key})->(${representative.key})`, pronoun.key, representative.key, {
-                    type: 'coreference',
-                    coref_id: pronoun.coref_id,
-                });
-            });
-        });
-      })
-- forEachNode:
-    from:
-      $: "graph"
-    as: "$node"
-    do: "delete $node.coreference"
-- delete: "coref_nodes"
+    into: "proper_nouns"
 
-# Counting POS categories:
+# Counting POS categories
 - reduceNodes:
     from:
       $: "graph"
@@ -68,9 +29,15 @@
     reduce: "$categories[$node.category] = ($categories[$node.category] || 0) + 1, $categories"
     into: "pos_categories_count"
 
-# Export graph:
+# Export graph as EChart
+- export_graph:
+      format: "ECharts"
+      from:
+          $: "graph"
+      into: "chart"
+
+# Export graph (default Graphology format)
 - export_graph:
     from:
       $: "graph"
     into: "graph"
-    #TODO: formats

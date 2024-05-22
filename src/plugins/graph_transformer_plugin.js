@@ -13,7 +13,58 @@ module.exports = {
                     multi: !!command.import_graph.multi || false,
                     type: command.import_graph.type || "mixed"
                 })
-                graph.import(inputValue)
+
+                let formatter
+                switch (command.import_graph.format?.toLowerCase()) {
+                    case "echarts":
+                        formatter = ({ dependencies: { data, nodes, links, edges, categories, ...deps_info }, ...data_info }) => ({
+                            nodes: (data ?? nodes).map(({ id, ...attributes }) => ({ key: id, attributes: { ...attributes, category: categories[attributes.category].name } })),
+                            edges: (links ?? edges).map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes })),
+                            attributes: { ...data_info, ...deps_info },
+                        })
+                        break
+                    case "graphology":
+                    case null:
+                    case undefined:
+                        formatter = (value) => value
+                        break
+                    default:
+                        formatter = new Function("return " + command.import_graph.format)()
+                        break
+                }
+
+                graph.import(formatter(inputValue))
+
+                if (command.import_graph.resolve_coreferences) {
+                    const coref_nodes = graph.filterNodes(
+                        (id, { coreference }) => coreference.length > 0
+                    ).map(key => ({
+                        key,
+                        ...graph.getNodeAttributes(key),
+                    }))
+
+                    _.values(_.groupBy(coref_nodes.flatMap(node => node.coreference.map(coref => ({
+                        key: node.key,
+                        is_representative: coref.is_representative,
+                        coref_id: coref.coref_id,
+                    }))), 'coref_id')).forEach(coref_group => {
+                        const representatives = coref_group.filter(node => node.is_representative)
+                        const pronouns = coref_group.filter(node => !node.is_representative)
+                        pronouns.forEach(pronoun => {
+                            representatives.forEach(representative => {
+                                graph.addEdgeWithKey(`(${pronoun.key})->(${representative.key})`, pronoun.key, representative.key, {
+                                    value: 'coref',
+                                    coref_id: pronoun.coref_id,
+                                })
+                            })
+                        })
+                    })
+
+                    graph.forEachNode((key) => {
+                        graph.removeNodeAttribute(key, 'coreference')
+                    })
+                }
+
                 _.set(context, command.import_graph.into, graph)
                 return context
             }
@@ -23,7 +74,31 @@ module.exports = {
             _execute: async (command, context) => {
                 const graph = resolveValue(command.export_graph.from || command.export_graph.graph, context, {})
                 const exportedGraph = graph.export()
-                _.set(context, command.export_graph.into || command.export_graph.to, exportedGraph)
+                let formatter
+                switch (command.export_graph.format?.toLowerCase()) {
+                    case "echarts":
+                        formatter = ({ nodes, edges, attributes }) => {
+                            const categories = _.uniq(nodes.map(({ attributes }) => attributes.category))
+                            return ({
+                                ...attributes,
+                                dependencies: {
+                                    nodes: nodes.map(({ key, attributes }) => ({ id: key, ...attributes, category: categories.indexOf(attributes.category) })),
+                                    links: edges.map(({ source, target, attributes: { value, ...other } }) => ({ ...other, source, value, target })),
+                                    categories: categories.map(name => ({ name })),
+                                },
+                            })
+                        }
+                        break
+                    case "graphology":
+                    case null:
+                    case undefined:
+                        formatter = (value) => value
+                        break
+                    default:
+                        formatter = new Function("return " + command.export_graph.format)()
+                        break
+                }
+                _.set(context, command.export_graph.into || command.export_graph.to, formatter(exportedGraph))
                 return context
             }
         },
