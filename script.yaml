@@ -19,7 +19,7 @@
     resolve_nodes: true
     into: "proper_nouns"
 
-# Counting POS categories
+# Count POS categories
 - reduceNodes:
     from:
       $: "graph"
@@ -29,11 +29,42 @@
     reduce: "$categories[$node.category] = ($categories[$node.category] || 0) + 1, $categories"
     into: "pos_categories_count"
 
+# Count types of dependencies
+- reduceEdges:
+    from:
+      $: "graph"
+    as: "$edge"
+    accumulator: "$dependencies"
+    initialValue: {}
+    reduce: "$dependencies[$edge.value] = ($dependencies[$edge.value] || 0) + 1, $dependencies"
+    into: "dependencies_count"
+
+# Find node with name = "fight"
+- findNode:
+    from:
+      $: "graph"
+    as: "$node"
+    where: "$node.name === 'fight'"
+    resolve_nodes: true
+    into: "fight_node"
+
+# Get all dependencies of 'obj' type that come from "fight_node" and resolve target node
+- filterOutEdges:
+    from:
+      $: "graph"
+    as: "$edge"
+    node:
+      $: "fight_node"
+    where: "$edge.value === 'obj'"
+    resolve_edges: true
+    resolve_targets: true
+    into: "fight_obj_relations"
+
 # Export graph as EChart
 - export_graph:
-      format: "ECharts"
       from:
           $: "graph"
+      format: "ECharts"
       into: "chart"
 
 # Export graph (default Graphology format)

@@ -105,9 +105,9 @@ module.exports = {
         {
             name: [
                 "forEachNode", "mapNodes", "filterNodes", "reduceNodes", "findNode", "someNode", "everyNode",
-                // ...["", "In", "Out", "Inbound", "Outbound", "Directed", "Undirected"].flatMap(variant => [
-                //     `forEach${variant}Edge`, `map${variant}Edges`, `filter${variant}Edges`, `reduce${variant}Edges`, `find${variant}Edge`, `some${variant}Edge`, `every${variant}Edge`
-                // ]), // TODO: add edges support
+                ...["", "In", "Out", "Inbound", "Outbound", "Directed", "Undirected"].flatMap(variant => [
+                    `forEach${variant}Edge`, `map${variant}Edges`, `filter${variant}Edges`, `reduce${variant}Edges`, `find${variant}Edge`, `some${variant}Edge`, `every${variant}Edge`
+                ]),
             ],
             _execute: async (command, context) => {
                 const commandName = _.keys(command)[0]
@@ -125,28 +125,47 @@ module.exports = {
                         (["for", "map"].some(prefix => commandNamePrefix === prefix) ?
                             (command[commandName].each || command[commandName].do) :
                             undefined)) || command[commandName][commandNamePrefix]
-                    const action = commandNamePrefix === 'reduce' ?
-                        new Function(accumulator, as, `return ${baseAction}`) :
-                        new Function(as, `return ${baseAction}`)
+
+                    const createItemProxy = (key, attrs) => {
+                        return new Proxy(attrs, {
+                            get: function(attrs, prop) {
+                                if (prop === 'key' || prop === 'id') return key
+                                if (prop === 'attributes' || prop === 'attrs') return attrs
+                                return attrs[prop]
+                            }
+                        })
+                    }
                     let callback = () => {}
                     if (commandName.includes('Edge')) {
-                        throw new Error("Edges not supported yet") // TODO
-                    } else {
-                        const createNodeProxy = (key, attrs) => {
-                            return new Proxy(attrs, {
-                                get: function(attrs, prop) {
-                                    if (prop === 'key' || prop === 'id') return key
-                                    if (prop === 'attributes' || prop === 'attrs') return attrs
-                                    return attrs[prop]
-                                }
-                            })
-                        }
+                        const source = resolveValue(command[commandName].source || command[commandName].from_node, context, undefined)
+                        const target = resolveValue(command[commandName].target || command[commandName].to_node, context, undefined)
+                        const node = resolveValue(command[commandName].node || command[commandName].of, context, undefined)
+
+                        const nodesParametrization = ((!!source && !!target) ? [source, target] : !!node ? [node] : []).map(node => _.isString(node) ? node : node.key)
+
+                        const defaultFunctionArgs = [as.edge ?? as, as.source ?? '$source', as.target ?? '$target', as.undirected ?? '$undirected']
+
                         if (commandNamePrefix === 'reduce') {
+                            const action = new Function(accumulator, ...defaultFunctionArgs, `return ${baseAction}`)
                             const initialValue = resolveValue(command[commandName].initialValue || command[commandName].initial, context, {})
-                            callback = (acc, key, attrs) => action(acc, createNodeProxy(key, attrs))
+                            callback = (acc, edgeKey, edgeAttrs, sourceKey, targetKey, sourceAttrs, targetAttrs, undirected) =>
+                                action(acc, createItemProxy(edgeKey, edgeAttrs), createItemProxy(sourceKey, sourceAttrs), createItemProxy(targetKey, targetAttrs), undirected)
+                            result = graph[commandName](...nodesParametrization, callback, initialValue)
+                        } else {
+                            const action = new Function(...defaultFunctionArgs, `return ${baseAction}`)
+                            callback = (edgeKey, edgeAttrs, sourceKey, targetKey, sourceAttrs, targetAttrs, undirected) =>
+                                action(createItemProxy(edgeKey, edgeAttrs), createItemProxy(sourceKey, sourceAttrs), createItemProxy(targetKey, targetAttrs), undirected)
+                            result = graph[commandName](...nodesParametrization, callback)
+                        }
+                    } else {
+                        if (commandNamePrefix === 'reduce') {
+                            const action = new Function(accumulator, as, `return ${baseAction}`)
+                            const initialValue = resolveValue(command[commandName].initialValue || command[commandName].initial, context, {})
+                            callback = (acc, key, attrs) => action(acc, createItemProxy(key, attrs))
                             result = graph[commandName](callback, initialValue)
                         } else {
-                            callback = (key, attrs) => action(createNodeProxy(key, attrs))
+                            const action = new Function(as, `return ${baseAction}`)
+                            callback = (key, attrs) => action(createItemProxy(key, attrs))
                             result = graph[commandName](callback)
                         }
                     }
@@ -155,18 +174,23 @@ module.exports = {
                     result = graph[commandName](action)
                 }
 
+                if (commandName.startsWith('find')) result = [result]
+
+                const nodeResolver = (key) => ({ key, ...graph.getNodeAttributes(key) })
                 if (commandName.includes('Node') && command[commandName].resolve_nodes) {
-                    result = result.map(key => ({
-                        key,
-                        ...graph.getNodeAttributes(key),
-                    }))
+                    result = result.map(nodeResolver)
                 } else if (commandName.includes('Edge') && command[commandName].resolve_edges) {
+                    const resolveSources = command[commandName].resolve_sources || command[commandName].resolve_nodes
+                    const resolveTargets = command[commandName].resolve_targets || command[commandName].resolve_nodes
                     result = result.map(key => ({
                         key,
+                        source: resolveSources ? nodeResolver(graph.source(key)) : graph.source(key),
+                        target: resolveTargets ? nodeResolver(graph.target(key)) : graph.target(key),
                         ...graph.getEdgeAttributes(key),
                     }))
-                    //TODO: add source and target?
                 }
+
+                if (commandName.startsWith('find')) [result] = result
 
                 if (!_.isUndefined(result)) _.set(context, command[commandName].into, result)
 
