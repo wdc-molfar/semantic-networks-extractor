@@ -47,18 +47,17 @@
     where: "$node.name === 'fight'"
     resolve_nodes: true
     into: "fight_node"
-
-# Get all dependencies of 'obj' and 'advmod' types that come from "fight_node" and resolve target node
+# Get all dependencies of 'nsubj', 'obj' and 'advmod' types that come from "fight_node", and resolve target nodes
 - filterOutEdges:
     from:
       $: "graph"
     as: "$edge"
     node:
       $: "fight_node"
-    where: "$edge.value === 'obj' || $edge.value === 'advmod'"
+    where: "$edge.value === 'nsubj' || $edge.value === 'obj' || $edge.value === 'advmod'"
     resolve_edges: true
     resolve_targets: true
-    into: "fight_obj_and_advmod_relations"
+    into: "fight_important_relations"
 
 # Find key of the node with name = "army"
 - findNode:
@@ -67,7 +66,6 @@
     as: "$node"
     where: "$node.name === 'army'"
     into: "army_node"
-
 # Get names of all neighbors of "army" node
 - mapNeighbors:
     from:
@@ -77,6 +75,52 @@
       $: "army_node"
     map: "$neighbor.name"
     into: "army_neighbors"
+
+# Add new node
+- transform:
+    from:
+      $: "graph"
+    action: >
+      (graph) => graph.addNode('0-1', {
+        name: 'anonymous',
+        value: 'anonymous',
+        category: 'NOUN'
+      })
+
+# Update node attributes by node key
+- transform:
+    from:
+      $: "graph"
+    action: >
+      (graph) => graph.updateNode(
+        '1-1',
+        old => ({ ...old, name: 'somebody' })
+      )
+
+# Add new edge
+- transform:
+    from:
+      $: "graph"
+    action: >
+      (graph) => graph.addEdgeWithKey('(1-1)->(0-1)', '1-1', '0-1', {
+        value: 'coref'
+      })
+
+# Find keys of all punctuation nodes
+- filterNodes:
+    from:
+      $: "graph"
+    as: "$node"
+    where: "$node.category === 'PUNCT'"
+    into: "punctuations"
+# Drop all punctuation nodes (and attached edges)
+- transform:
+    from:
+      $: "punctuations"
+    action: >
+      (punctuations, { graph }) => punctuations.forEach(
+        node => graph.dropNode(node)
+      )
 
 # Export graph as EChart
 - export_graph:
