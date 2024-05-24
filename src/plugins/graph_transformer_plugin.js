@@ -105,9 +105,9 @@ module.exports = {
         {
             name: [
                 "forEachNode", "mapNodes", "filterNodes", "reduceNodes", "findNode", "someNode", "everyNode",
-                ...["", "In", "Out", "Inbound", "Outbound", "Directed", "Undirected"].flatMap(variant => [
-                    `forEach${variant}Edge`, `map${variant}Edges`, `filter${variant}Edges`, `reduce${variant}Edges`, `find${variant}Edge`, `some${variant}Edge`, `every${variant}Edge`
-                ]),
+                ...["Edge", "Neighbor"].flatMap(iteratee => ["", "In", "Out", "Inbound", "Outbound", "Directed", "Undirected"].flatMap(variant => [
+                    `forEach${variant}${iteratee}`, `map${variant}${iteratee}s`, `filter${variant}${iteratee}s`, `reduce${variant}${iteratee}s`, `find${variant}${iteratee}`, `some${variant}${iteratee}`, `every${variant}${iteratee}`
+                ])),
             ],
             _execute: async (command, context) => {
                 const commandName = _.keys(command)[0]
@@ -158,15 +158,18 @@ module.exports = {
                             result = graph[commandName](...nodesParametrization, callback)
                         }
                     } else {
+                        const node = resolveValue(command[commandName].node || command[commandName].of, context, undefined)
+                        const nodesParametrization = (commandName.includes('Neighbor') ? [node] : []).map(node => _.isString(node) ? node : node.key)
+
                         if (commandNamePrefix === 'reduce') {
                             const action = new Function(accumulator, as, `return ${baseAction}`)
                             const initialValue = resolveValue(command[commandName].initialValue || command[commandName].initial, context, {})
                             callback = (acc, key, attrs) => action(acc, createItemProxy(key, attrs))
-                            result = graph[commandName](callback, initialValue)
+                            result = graph[commandName](...nodesParametrization, callback, initialValue)
                         } else {
                             const action = new Function(as, `return ${baseAction}`)
                             callback = (key, attrs) => action(createItemProxy(key, attrs))
-                            result = graph[commandName](callback)
+                            result = graph[commandName](...nodesParametrization, callback)
                         }
                     }
                 } else {

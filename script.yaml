@@ -48,17 +48,35 @@
     resolve_nodes: true
     into: "fight_node"
 
-# Get all dependencies of 'obj' type that come from "fight_node" and resolve target node
+# Get all dependencies of 'obj' and 'advmod' types that come from "fight_node" and resolve target node
 - filterOutEdges:
     from:
       $: "graph"
     as: "$edge"
     node:
       $: "fight_node"
-    where: "$edge.value === 'obj'"
+    where: "$edge.value === 'obj' || $edge.value === 'advmod'"
     resolve_edges: true
     resolve_targets: true
-    into: "fight_obj_relations"
+    into: "fight_obj_and_advmod_relations"
+
+# Find key of the node with name = "army"
+- findNode:
+    from:
+      $: "graph"
+    as: "$node"
+    where: "$node.name === 'army'"
+    into: "army_node"
+
+# Get names of all neighbors of "army" node
+- mapNeighbors:
+    from:
+      $: "graph"
+    as: "$neighbor"
+    node:
+      $: "army_node"
+    map: "$neighbor.name"
+    into: "army_neighbors"
 
 # Export graph as EChart
 - export_graph:
