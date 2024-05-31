@@ -4,6 +4,7 @@
       $: "data"
     format: "ECharts"
     type: "directed"
+    multi: true
     resolve_coreferences: true
     into: "graph"
 
@@ -103,7 +104,8 @@
       $: "graph"
     action: >
       (graph) => graph.addEdgeWithKey('(1-1)->(0-1)', '1-1', '0-1', {
-        value: 'coref'
+        value: 'coref',
+        coref_id: -1,
       })
 
 # Find keys of all punctuation nodes
@@ -121,6 +123,38 @@
       (punctuations, { graph }) => punctuations.forEach(
         node => graph.dropNode(node)
       )
+
+# Get coreference chains
+- reduceEdges:
+    from:
+      $: "graph"
+    as:
+      edge: "$edge"
+      source: "$source"
+      target: "$target"
+    accumulator: "$coreferences"
+    initialValue: { }
+    reduce: "$edge.value === 'coref' ? $coreferences[$source.key] = ($coreferences[$source.key] || []).concat([$target.key]) : undefined, $coreferences"
+    into: "coreference_chains"
+
+# Resolve coreferences
+- transform:
+    from:
+      $: "coreference_chains"
+    action: >
+      (coreference_chains, { graph }) => Object.entries(coreference_chains).forEach(([pron, nodes]) => {
+        const rootNode = nodes.find(node => !graph.someInNeighbor(node, (neighbor) => nodes.includes(neighbor)))
+        graph.inEdges(pron).forEach(key => {
+          const source = graph.source(key)
+          graph.addEdgeWithKey(`(${source})-c->(${rootNode})`, source, rootNode, graph.getEdgeAttributes(key))
+        })
+        graph.outEdges(pron).forEach(key => {
+          if (graph.getEdgeAttribute(key, 'value') === 'coref') return
+          const target = graph.target(key)
+          graph.addEdgeWithKey(`(${rootNode})-c->(${target})`, rootNode, target, graph.getEdgeAttributes(key))
+        })
+        graph.dropNode(pron)
+      })
 
 # Export graph as EChart
 - export_graph:
