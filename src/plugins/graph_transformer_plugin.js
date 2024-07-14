@@ -18,8 +18,8 @@ module.exports = {
                 switch (command.import_graph.format?.toLowerCase()) {
                     case "echarts":
                         formatter = ({ dependencies: { data, nodes, links, edges, categories, ...deps_info }, ...data_info }) => ({
-                            nodes: (data ?? nodes).map(({ id, ...attributes }) => ({ key: id, attributes: { ...attributes, category: categories[attributes.category].name } })),
-                            edges: (links ?? edges).map(({ source, target, ...attributes }) => ({ key: `(${source})->(${target})`, source, target, attributes })),
+                            nodes: (data ?? nodes).map(({ id, key, ...attributes }) => ({ key: id ?? key, attributes: { ...attributes, category: categories[attributes.category].name } })),
+                            edges: (links ?? edges).map(({ id, key, source, target, ...attributes }) => ({ key: id ?? key ?? `(${source})->(${target})`, source, target, attributes })),
                             attributes: { ...data_info, ...deps_info },
                         })
                         break
@@ -132,7 +132,13 @@ module.exports = {
                                 if (prop === 'key' || prop === 'id') return key
                                 if (prop === 'attributes' || prop === 'attrs') return attrs
                                 return attrs[prop]
-                            }
+                            },
+                            ownKeys(target) {
+                                return ['key', ...Reflect.ownKeys(target)]
+                            },
+                            has(target, key) {
+                                return key === 'key' || key in target
+                            },
                         })
                     }
                     let callback = () => {}
@@ -179,18 +185,18 @@ module.exports = {
 
                 if (commandName.startsWith('find')) result = [result]
 
-                const nodeResolver = (key) => ({ key, ...graph.getNodeAttributes(key) })
+                const nodeResolver = (key) => key ? { key, ...graph.getNodeAttributes(key) } : undefined
                 if (commandName.includes('Node') && command[commandName].resolve_nodes) {
                     result = result.map(nodeResolver)
                 } else if (commandName.includes('Edge') && command[commandName].resolve_edges) {
                     const resolveSources = command[commandName].resolve_sources || command[commandName].resolve_nodes
                     const resolveTargets = command[commandName].resolve_targets || command[commandName].resolve_nodes
-                    result = result.map(key => ({
+                    result = result.map(key => key ? {
                         key,
                         source: resolveSources ? nodeResolver(graph.source(key)) : graph.source(key),
                         target: resolveTargets ? nodeResolver(graph.target(key)) : graph.target(key),
                         ...graph.getEdgeAttributes(key),
-                    }))
+                    } : undefined)
                 }
 
                 if (commandName.startsWith('find')) [result] = result
