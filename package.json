@@ -2,9 +2,13 @@
   "name": "@molfar/semantic-networks-extractor",
   "version": "1.0.0",
   "description": "Semantic network extractor from annotated text",
-  "main": "service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "watch": "npm run build -- --watch src",
+    "prepublishOnly": "npm run build",
+    "example": "tsx run_example.ts"
   },
   "repository": {
     "type": "git",
@@ -12,6 +16,22 @@
   },
   "author": "",
   "license": "ISC",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "directories": {
+    "test": "tests"
+  },
   "bugs": {
     "url": "https://github.com/wdc-molfar/semantic-networks-extractor/issues"
   },
@@ -23,5 +43,16 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/js-yaml": "^4.0.9",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.0",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
+    "tsup": "^8.2.4",
+    "tsx": "^4.18.0",
+    "typescript": "^5.5.4"
   }
 }
