@@ -1,0 +1,37 @@
+- import_graph:
+    from:
+      $: data
+    format: graphology
+    type: directed
+    into: graph
+
+- forEachNode:
+    as: $node
+    from:
+      $: graph
+    do: >
+      $node.value = $node.name == 'A' ? 0 : Infinity
+
+- value:
+    set: >
+      ({ graph }) => Array.from({length: graph.order - 1}, (_, i) => i)
+    into: iterations
+
+- forEach:
+    from:
+      $: iterations
+    do:
+      - forEachEdge:
+          as:
+            edge: $edge
+            source: $source
+            target: $target
+          from:
+            $: graph
+          do: $target.value = Math.min($target.value, $source.value + $edge.value)
+
+- export_graph:
+      from:
+          $: graph
+      format: ECharts
+      into: chart

@@ -1,0 +1,135 @@
+{
+  "options": {
+    "type": "directed",
+    "multi": false,
+    "allowSelfLoops": false
+  },
+  "attributes": {},
+  "nodes": [
+    {
+      "key": "A",
+      "attributes": {
+        "name": "A",
+        "category": "Start"
+      }
+    },
+    {
+      "key": "B",
+      "attributes": {
+        "name": "B",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "C",
+      "attributes": {
+        "name": "C",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "D",
+      "attributes": {
+        "name": "D",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "E",
+      "attributes": {
+        "name": "E",
+        "category": "Other"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "key": "geid_229_0",
+      "source": "B",
+      "target": "D",
+      "attributes": {
+        "value": 5,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_1",
+      "source": "A",
+      "target": "C",
+      "attributes": {
+        "value": 2,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_2",
+      "source": "C",
+      "target": "B",
+      "attributes": {
+        "value": 3,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_3",
+      "source": "D",
+      "target": "E",
+      "attributes": {
+        "value": 5,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_4",
+      "source": "B",
+      "target": "E",
+      "attributes": {
+        "value": 1,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_5",
+      "source": "C",
+      "target": "E",
+      "attributes": {
+        "value": 5,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_6",
+      "source": "A",
+      "target": "E",
+      "attributes": {
+        "value": 8,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    },
+    {
+      "key": "geid_229_7",
+      "source": "E",
+      "target": "D",
+      "attributes": {
+        "value": 2,
+        "lineStyle": {
+          "curveness": 0.2
+        }
+      }
+    }
+  ]
+}

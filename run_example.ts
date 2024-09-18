@@ -2,7 +2,7 @@ import fs from 'fs';
 import YAML from 'js-yaml';
 import { SemNetExtractor } from './src';
 
-const exampleId = 'relations';
+const exampleId = 'shortest_paths';
 
 const data = JSON.parse(
     fs.readFileSync(`./examples/${exampleId}/input.json`, 'utf-8')

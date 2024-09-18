@@ -90,7 +90,7 @@ const plugin: Plugin = {
                 command.value = command.value || command.const;
                 const value = await transform(
                     command.value.transform || command.value.set,
-                    undefined,
+                    context,
                     context
                 );
                 _.set(context, command.value.into, value);
