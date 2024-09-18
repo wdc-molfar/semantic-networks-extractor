@@ -33,6 +33,36 @@ const plugin: Plugin = {
             },
         },
         {
+            name: ['forEach', 'iterate'],
+            _execute: async (command, context) => {
+                command.forEach = command.forEach || command.iterate;
+                command.forEach.do =
+                    command.forEach.do || command.forEach.execute;
+                const collection = resolveValue(
+                    command.forEach.collection ||
+                        command.forEach.of ||
+                        command.forEach.from,
+                    context,
+                    []
+                );
+                const as =
+                    command.forEach.as ||
+                    command.forEach.item ||
+                    command.forEach.element ||
+                    '$item';
+                for (const element of collection) {
+                    context[as] = element;
+                    for (const subCommand of command.forEach.do) {
+                        context = await extractorInstance.executeOnce(
+                            subCommand,
+                            context
+                        );
+                    }
+                }
+                return context;
+            },
+        },
+        {
             name: ['transform', 'context'],
             _execute: async (command, context) => {
                 command.transform = command.transform || command.context;

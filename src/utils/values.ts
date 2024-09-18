@@ -23,6 +23,7 @@ export const resolveValues = (
     variable: VariableNameType,
     context: Context
 ): any => {
+    if (variable === undefined) return undefined;
     const value = resolveValue(variable, context);
 
     if (isArray(value)) {
@@ -32,7 +33,18 @@ export const resolveValues = (
     if (isObject(value) && !isString(value)) {
         keys(value).forEach((key) => {
             const resolvedValue = resolveValues((value as any)[key], context);
-            if ((value as any)[key] !== resolvedValue)
+            if (
+                resolvedValue === undefined &&
+                (value as any)[key] !== undefined &&
+                '$' in (value as any)[key]
+            ) {
+                const reference = (value as any)[key].$ as string;
+                Object.defineProperty(value, key, {
+                    get() {
+                        return context[reference];
+                    },
+                });
+            } else if ((value as any)[key] !== resolvedValue)
                 (value as any)[key] = resolvedValue;
         });
         return value;

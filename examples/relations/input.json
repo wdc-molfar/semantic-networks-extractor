@@ -1,0 +1,214 @@
+{
+  "sentiment": "neutral",
+  "named_entities": [],
+  "dependencies": {
+    "nodes": [
+      {
+        "id": "1-1",
+        "name": "the",
+        "value": "The",
+        "category": 5,
+        "coreference": []
+      },
+      {
+        "id": "1-2",
+        "name": "President",
+        "value": "President",
+        "category": 11,
+        "coreference": []
+      },
+      {
+        "id": "1-3",
+        "name": "sign",
+        "value": "signed",
+        "category": 15,
+        "coreference": []
+      },
+      {
+        "id": "1-4",
+        "name": "the",
+        "value": "the",
+        "category": 5,
+        "coreference": []
+      },
+      {
+        "id": "1-5",
+        "name": "new",
+        "value": "new",
+        "category": 0,
+        "coreference": []
+      },
+      {
+        "id": "1-6",
+        "name": "agreement",
+        "value": "agreement",
+        "category": 7,
+        "coreference": []
+      },
+      {
+        "id": "1-7",
+        "name": ",",
+        "value": ",",
+        "category": 12,
+        "coreference": []
+      },
+      {
+        "id": "1-8",
+        "name": "while",
+        "value": "while",
+        "category": 13,
+        "coreference": []
+      },
+      {
+        "id": "1-9",
+        "name": "the",
+        "value": "the",
+        "category": 5,
+        "coreference": []
+      },
+      {
+        "id": "1-10",
+        "name": "secretary",
+        "value": "secretary",
+        "category": 7,
+        "coreference": []
+      },
+      {
+        "id": "1-11",
+        "name": "organize",
+        "value": "organized",
+        "category": 15,
+        "coreference": []
+      },
+      {
+        "id": "1-12",
+        "name": "meeting",
+        "value": "meetings",
+        "category": 7,
+        "coreference": []
+      },
+      {
+        "id": "1-13",
+        "name": ".",
+        "value": ".",
+        "category": 12,
+        "coreference": []
+      }
+    ],
+    "links": [
+      {
+        "source": "1-2",
+        "value": "det",
+        "target": "1-1"
+      },
+      {
+        "source": "1-3",
+        "value": "nsubj",
+        "target": "1-2"
+      },
+      {
+        "source": "1-6",
+        "value": "det",
+        "target": "1-4"
+      },
+      {
+        "source": "1-6",
+        "value": "amod",
+        "target": "1-5"
+      },
+      {
+        "source": "1-3",
+        "value": "obj",
+        "target": "1-6"
+      },
+      {
+        "source": "1-3",
+        "value": "punct",
+        "target": "1-7"
+      },
+      {
+        "source": "1-11",
+        "value": "mark",
+        "target": "1-8"
+      },
+      {
+        "source": "1-10",
+        "value": "det",
+        "target": "1-9"
+      },
+      {
+        "source": "1-11",
+        "value": "nsubj",
+        "target": "1-10"
+      },
+      {
+        "source": "1-3",
+        "value": "advcl",
+        "target": "1-11"
+      },
+      {
+        "source": "1-11",
+        "value": "obj",
+        "target": "1-12"
+      },
+      {
+        "source": "1-3",
+        "value": "punct",
+        "target": "1-13"
+      }
+    ],
+    "categories": [
+      {
+        "name": "ADJ"
+      },
+      {
+        "name": "ADP"
+      },
+      {
+        "name": "ADV"
+      },
+      {
+        "name": "AUX"
+      },
+      {
+        "name": "CCONJ"
+      },
+      {
+        "name": "DET"
+      },
+      {
+        "name": "INTJ"
+      },
+      {
+        "name": "NOUN"
+      },
+      {
+        "name": "NUM"
+      },
+      {
+        "name": "PART"
+      },
+      {
+        "name": "PRON"
+      },
+      {
+        "name": "PROPN"
+      },
+      {
+        "name": "PUNCT"
+      },
+      {
+        "name": "SCONJ"
+      },
+      {
+        "name": "SYM"
+      },
+      {
+        "name": "VERB"
+      },
+      {
+        "name": "X"
+      }
+    ]
+  }
+}

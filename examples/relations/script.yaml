@@ -1,0 +1,68 @@
+- import_graph:
+    from:
+      $: data
+    format: ECharts
+    type: directed
+    into: graph
+
+- filterNodes:
+    as: $node
+    from:
+      $: graph
+    where: $node.category == 'VERB'
+    into: verbs
+    resolve_nodes: true
+
+- forEach:
+    item: $verb
+    from:
+      $: verbs
+    do:
+      - value:
+          set: () => ({})
+          into: $out
+      - reduceOutEdges:
+          of:
+            $: $verb
+          as:
+            edge: $edge
+            target: $target
+          from:
+            $: graph
+          initialValue:
+            $: $out
+          reduce: $out[$edge.value] = $target.key, $out
+          into: $out
+      - transform:
+          from:
+            $: $out
+          action: >
+            ($out, {graph, $verb}) =>
+              ('nsubj' in $out && 'obj' in $out ?
+                (graph.addEdge($out.nsubj, $out.obj, { value: $verb.name }), graph.dropNode($verb.key)) :
+                undefined)
+
+
+- filterNodes:
+    as: $node
+    from:
+      $: graph
+    where: $node.category != 'NOUN' && $node.category != 'PROPN'
+    into: not_nouns
+
+- forEach:
+    item: $word
+    from:
+      $: not_nouns
+    do:
+      - transform:
+          from:
+            $: $word
+          action: >
+            ($word, { graph }) => graph.dropNode($word)
+
+- export_graph:
+      from:
+          $: graph
+      format: ECharts
+      into: chart
