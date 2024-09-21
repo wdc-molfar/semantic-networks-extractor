@@ -2,7 +2,7 @@ import fs from 'fs';
 import YAML from 'js-yaml';
 import { SemNetExtractor } from './src';
 
-const exampleId = 'shortest_paths';
+const exampleId = 'rumor';
 
 const data = JSON.parse(
     fs.readFileSync(`./examples/${exampleId}/input.json`, 'utf-8')
@@ -21,7 +21,19 @@ const run = async () => {
     //console.log(context.output)
 
     const output_path = './output.json';
-    fs.writeFileSync(output_path, JSON.stringify(context, null, 2));
+    fs.writeFileSync(
+        output_path,
+        JSON.stringify(
+            context,
+            (_key, value) =>
+                value instanceof Set
+                    ? [...value]
+                    : value instanceof Map
+                      ? Object.fromEntries(value)
+                      : value,
+            2
+        )
+    );
 
     console.log(`All context written to ${output_path}`);
 };

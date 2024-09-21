@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { resolveValue } from '../utils/values';
+import { resolveValue, resolveContextVariables } from '../utils';
 import { Context, Executor, Plugin } from '../types';
 
 let extractorInstance: Executor;
@@ -53,6 +53,55 @@ const plugin: Plugin = {
                 for (const element of collection) {
                     context[as] = element;
                     for (const subCommand of command.forEach.do) {
+                        context = await extractorInstance.executeOnce(
+                            subCommand,
+                            context
+                        );
+                    }
+                }
+                return context;
+            },
+        },
+        {
+            name: ['while'],
+            _execute: async (command, context) => {
+                command.while.condition =
+                    command.while.condition || command.while.check;
+                command.while.do = command.while.do || command.while.execute;
+                const conditionCheckFunc = new Function(
+                    'context',
+                    `return ${resolveContextVariables(command.while.condition.toString())}`
+                );
+                while (conditionCheckFunc(context)) {
+                    for (const subCommand of command.while.do) {
+                        context = await extractorInstance.executeOnce(
+                            subCommand,
+                            context
+                        );
+                    }
+                }
+                return context;
+            },
+        },
+        {
+            name: ['if'],
+            _execute: async (command, context) => {
+                command.if.condition = command.if.condition || command.if.check;
+
+                const conditionCheckFunc = new Function(
+                    'context',
+                    `return ${resolveContextVariables(command.if.condition.toString())}`
+                );
+
+                if (conditionCheckFunc(context)) {
+                    for (const subCommand of command.if.then ?? []) {
+                        context = await extractorInstance.executeOnce(
+                            subCommand,
+                            context
+                        );
+                    }
+                } else {
+                    for (const subCommand of command.if.else ?? []) {
                         context = await extractorInstance.executeOnce(
                             subCommand,
                             context

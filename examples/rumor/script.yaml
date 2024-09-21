@@ -1,0 +1,73 @@
+- import_graph:
+    from:
+      $: data
+    format: graphology
+    type: undirected
+    into: graph
+
+- value:
+    set: ({ graph }) => new Set([graph.nodes()[0]])
+    into: informedNodes
+
+- value:
+    set: () => 1
+    into: iteration
+
+- while:
+    condition: informedNodes.size < graph.order
+    do:
+      - value:
+          set: () => new Set()
+          into: newlyInformedNodes
+      - forEach:
+          as: $informedNode
+          from:
+            $: informedNodes
+          do:
+            - reduceNeighbors:
+                of:
+                  $: $informedNode
+                as: $neighbor
+                from:
+                  $: graph
+                initialValue:
+                  $: newlyInformedNodes
+                reduce: >
+                  Math.random() < 0.75 && newlyInformedNodes.add($neighbor.key),
+                  newlyInformedNodes
+                into: newlyInformedNodes
+      - transform:
+          from:
+            $: informedNodes
+          action: > 
+            (informedNodes, { newlyInformedNodes }) =>
+              new Set([...informedNodes, ...newlyInformedNodes])
+          into: informedNodes
+      - forEach:
+          as: $newlyInformedNode
+          from:
+            $: newlyInformedNodes
+          do:
+            - transform:
+                from:
+                  $: graph
+                action: >
+                  (graph, { $newlyInformedNode, iteration }) =>
+                    graph.updateNodeAttribute($newlyInformedNode, 'value', val => val ?? iteration)
+      - transform:
+          from:
+            $: iteration
+          action: (iteration) => iteration + 1
+          into: iteration
+
+- forEachNode:
+    as: $node
+    from:
+      $: graph
+    do: $node.category = '' + $node.value
+
+- export_graph:
+      from:
+          $: graph
+      format: ECharts
+      into: chart

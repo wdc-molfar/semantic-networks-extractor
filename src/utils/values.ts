@@ -8,10 +8,10 @@ export const resolveValue = <T>(
     context: Context,
     defaultValue?: T
 ) => {
-    if (isUndefined(variable)) return;
+    if (isUndefined(variable)) return undefined;
 
-    if (variable && variable.$) {
-        let res = get(context, variable.$);
+    if (variable?.$) {
+        const res = get(context, variable.$);
 
         return isUndefined(res) ? defaultValue : res;
     }
@@ -32,20 +32,14 @@ export const resolveValues = (
 
     if (isObject(value) && !isString(value)) {
         keys(value).forEach((key) => {
-            const resolvedValue = resolveValues((value as any)[key], context);
-            if (
-                resolvedValue === undefined &&
-                (value as any)[key] !== undefined &&
-                '$' in (value as any)[key]
-            ) {
+            if (isObject((value as any)[key]) && '$' in (value as any)[key]) {
                 const reference = (value as any)[key].$ as string;
                 Object.defineProperty(value, key, {
                     get() {
                         return context[reference];
                     },
                 });
-            } else if ((value as any)[key] !== resolvedValue)
-                (value as any)[key] = resolvedValue;
+            }
         });
         return value;
     }

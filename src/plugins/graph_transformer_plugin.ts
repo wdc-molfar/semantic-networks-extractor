@@ -163,7 +163,9 @@ const plugin: Plugin = {
                                         ({
                                             source,
                                             target,
-                                            attributes: { value, ...other },
+                                            attributes: { value, ...other } = {
+                                                value: undefined,
+                                            },
                                         }: any) => ({
                                             ...other,
                                             source,

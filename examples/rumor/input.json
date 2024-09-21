@@ -1,0 +1,438 @@
+{
+  "options": {
+    "type": "undirected",
+    "multi": false,
+    "allowSelfLoops": true
+  },
+  "attributes": {},
+  "nodes": [
+    {
+      "key": "0",
+      "attributes": {
+        "name": "A",
+        "category": "Start",
+        "value": 0
+      }
+    },
+    {
+      "key": "1",
+      "attributes": {
+        "name": "B",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "2",
+      "attributes": {
+        "name": "C",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "3",
+      "attributes": {
+        "name": "D",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "4",
+      "attributes": {
+        "name": "E",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "5",
+      "attributes": {
+        "name": "F",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "6",
+      "attributes": {
+        "name": "G",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "7",
+      "attributes": {
+        "name": "H",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "8",
+      "attributes": {
+        "name": "I",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "9",
+      "attributes": {
+        "name": "J",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "10",
+      "attributes": {
+        "name": "K",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "11",
+      "attributes": {
+        "name": "L",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "12",
+      "attributes": {
+        "name": "M",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "13",
+      "attributes": {
+        "name": "N",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "14",
+      "attributes": {
+        "name": "O",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "15",
+      "attributes": {
+        "name": "P",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "16",
+      "attributes": {
+        "name": "Q",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "17",
+      "attributes": {
+        "name": "R",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "18",
+      "attributes": {
+        "name": "S",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "19",
+      "attributes": {
+        "name": "T",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "20",
+      "attributes": {
+        "name": "U",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "21",
+      "attributes": {
+        "name": "V",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "22",
+      "attributes": {
+        "name": "W",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "23",
+      "attributes": {
+        "name": "X",
+        "category": "Other"
+      }
+    },
+    {
+      "key": "24",
+      "attributes": {
+        "name": "Y",
+        "category": "Other"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "key": "geid_94_0",
+      "source": "24",
+      "target": "18"
+    },
+    {
+      "key": "geid_94_1",
+      "source": "18",
+      "target": "22"
+    },
+    {
+      "key": "geid_94_2",
+      "source": "14",
+      "target": "12"
+    },
+    {
+      "key": "geid_94_3",
+      "source": "16",
+      "target": "22"
+    },
+    {
+      "key": "geid_94_4",
+      "source": "10",
+      "target": "9"
+    },
+    {
+      "key": "geid_94_5",
+      "source": "3",
+      "target": "4"
+    },
+    {
+      "key": "geid_94_6",
+      "source": "12",
+      "target": "6"
+    },
+    {
+      "key": "geid_94_7",
+      "source": "6",
+      "target": "0"
+    },
+    {
+      "key": "geid_94_8",
+      "source": "17",
+      "target": "2"
+    },
+    {
+      "key": "geid_94_9",
+      "source": "12",
+      "target": "23"
+    },
+    {
+      "key": "geid_94_10",
+      "source": "1",
+      "target": "21"
+    },
+    {
+      "key": "geid_94_11",
+      "source": "21",
+      "target": "9"
+    },
+    {
+      "key": "geid_94_12",
+      "source": "23",
+      "target": "24"
+    },
+    {
+      "key": "geid_94_13",
+      "source": "7",
+      "target": "16"
+    },
+    {
+      "key": "geid_94_14",
+      "source": "9",
+      "target": "6"
+    },
+    {
+      "key": "geid_94_15",
+      "source": "15",
+      "target": "23"
+    },
+    {
+      "key": "geid_94_16",
+      "source": "13",
+      "target": "3"
+    },
+    {
+      "key": "geid_94_17",
+      "source": "6",
+      "target": "18"
+    },
+    {
+      "key": "geid_94_18",
+      "source": "14",
+      "target": "2"
+    },
+    {
+      "key": "geid_94_19",
+      "source": "0",
+      "target": "17"
+    },
+    {
+      "key": "geid_94_20",
+      "source": "10",
+      "target": "11"
+    },
+    {
+      "key": "geid_94_21",
+      "source": "23",
+      "target": "14"
+    },
+    {
+      "key": "geid_94_22",
+      "source": "17",
+      "target": "21"
+    },
+    {
+      "key": "geid_94_23",
+      "source": "18",
+      "target": "23"
+    },
+    {
+      "key": "geid_94_24",
+      "source": "21",
+      "target": "19"
+    },
+    {
+      "key": "geid_94_25",
+      "source": "16",
+      "target": "12"
+    },
+    {
+      "key": "geid_94_26",
+      "source": "9",
+      "target": "4"
+    },
+    {
+      "key": "geid_94_27",
+      "source": "15",
+      "target": "9"
+    },
+    {
+      "key": "geid_94_28",
+      "source": "0",
+      "target": "8"
+    },
+    {
+      "key": "geid_94_29",
+      "source": "11",
+      "target": "5"
+    },
+    {
+      "key": "geid_94_30",
+      "source": "23",
+      "target": "2"
+    },
+    {
+      "key": "geid_94_31",
+      "source": "5",
+      "target": "12"
+    },
+    {
+      "key": "geid_94_32",
+      "source": "8",
+      "target": "9"
+    },
+    {
+      "key": "geid_94_33",
+      "source": "22",
+      "target": "24"
+    },
+    {
+      "key": "geid_94_34",
+      "source": "5",
+      "target": "23"
+    },
+    {
+      "key": "geid_94_35",
+      "source": "15",
+      "target": "2"
+    },
+    {
+      "key": "geid_94_36",
+      "source": "6",
+      "target": "14"
+    },
+    {
+      "key": "geid_94_37",
+      "source": "7",
+      "target": "1"
+    },
+    {
+      "key": "geid_94_38",
+      "source": "8",
+      "target": "18"
+    },
+    {
+      "key": "geid_94_39",
+      "source": "16",
+      "target": "15"
+    },
+    {
+      "key": "geid_94_40",
+      "source": "8",
+      "target": "11"
+    },
+    {
+      "key": "geid_94_41",
+      "source": "17",
+      "target": "22"
+    },
+    {
+      "key": "geid_94_42",
+      "source": "9",
+      "target": "11"
+    },
+    {
+      "key": "geid_94_43",
+      "source": "15",
+      "target": "22"
+    },
+    {
+      "key": "geid_94_44",
+      "source": "20",
+      "target": "1"
+    },
+    {
+      "key": "geid_94_45",
+      "source": "9",
+      "target": "13"
+    },
+    {
+      "key": "geid_94_46",
+      "source": "17",
+      "target": "3"
+    },
+    {
+      "key": "geid_94_47",
+      "source": "21",
+      "target": "15"
+    },
+    {
+      "key": "geid_94_48",
+      "source": "13",
+      "target": "16"
+    },
+    {
+      "key": "geid_94_49",
+      "source": "5",
+      "target": "15"
+    }
+  ]
+}
