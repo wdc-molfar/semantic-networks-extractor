@@ -17,13 +17,13 @@ export const resolveContextVariables = (
     contextName = 'context'
 ) => {
     return condition.replace(
-        /([a-zA-Z_]\w*(?:\.\w+|\["[^"]*"\]|\['[^']*'\])*)/g,
+        /(?<!["'])(?=([a-zA-Z_$\.][\w$]*))\1(?!["'])/g,
         (match) => {
-            // check if the match is a valid literal, a reserved keyword or global object, we skip replacement for those
+            // check if the match is a property, a valid literal, a reserved keyword or global object, we skip replacement for those
             if (
+                match.startsWith('.') ||
                 reservedKeywordsAndGlobals.includes(match.split(/[\.\[]/)[0]) ||
-                !isNaN(+match) ||
-                /^["'].*["']$/.test(match)
+                !isNaN(+match)
             ) {
                 return match; // it's a literal or a keyword, don't replace it
             }

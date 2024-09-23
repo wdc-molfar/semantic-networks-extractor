@@ -33,15 +33,16 @@
             $: $out
           reduce: $out[$edge.value] = $target.key, $out
           into: $out
-      - transform:
-          from:
-            $: $out
-          action: >
-            ($out, {graph, $verb}) =>
-              ('nsubj' in $out && 'obj' in $out ?
-                (graph.addEdge($out.nsubj, $out.obj, { value: $verb.name }), graph.dropNode($verb.key)) :
-                undefined)
-
+      - if:
+          condition: >
+            'nsubj' in $out && 'obj' in $out
+          then:
+            - transform:
+                from:
+                  $: $out
+                action: >
+                  ($out, {graph, $verb}) =>
+                    graph.addEdge($out.nsubj, $out.obj, { value: $verb.name })
 
 - filterNodes:
     as: $node
